@@ -1,0 +1,27 @@
+### Java & Maven ###
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.zip
+*.tar.gz
+*.rar
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+.shelf/
+
+### Log files ###
+*.log
+logs/
+
+### Database & Sensitive Info ###
+application-local.properties
+application-dev.properties
+.env
