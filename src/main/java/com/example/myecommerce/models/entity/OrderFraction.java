@@ -5,11 +5,11 @@ import lombok.Getter;
 
 @Entity
 @Table(name = "order_fraction")
+@Getter
 public class OrderFraction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_fraccion_id")
-    @Getter
     private long orderFractionId;
 
     @ManyToOne
@@ -17,15 +17,12 @@ public class OrderFraction {
     private Order order;
 
     @Column(name = "product_id")
-    @Getter
     private String productId;
 
     @Column(name = "quantity")
-    @Getter
     private int quantity;
 
     @Column(name = "unit_price")
-    @Getter
     private double unitPrice;
 
     public OrderFraction(){

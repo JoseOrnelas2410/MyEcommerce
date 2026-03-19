@@ -1,51 +1,47 @@
 package com.example.myecommerce.models.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "orders")//Indicado como Orders para evitar conflicto con palabra reservada
+@Getter
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
     @Column(name = "order_id")
     private long orderId;
 
     @ManyToOne
-    @Getter
     @JoinColumn(name = "user_id")
     Customer customer;
 
     @Column(name = "subtotal")
-    @Getter
     private double subTotal;
 
     @Column(name = "iva")
-    @Getter
     private double iva;
 
     @Column(name = "total")
-    @Getter
     private double total;
 
     @Column(name = "order_date_time")
-    @Getter
     private LocalDateTime dateTime;
 
     @Column(name = "order_address")
-    @Getter
     private String orderAddres;
 
     @Column(name = "id_order_status")
-    @Getter
+    @Setter
     private int idOrderStatus;
 
     @Column(name = "id_payment_status")
-    @Getter
+    @Setter
     private int idPaymentStatus;
 
     public Order(){ }
@@ -63,5 +59,7 @@ public class Order {
         this.total = total;
         this.dateTime = LocalDateTime.now();
         this.orderAddres = orderAddres;
+        this.idOrderStatus = 1;
+        this.idPaymentStatus = 1;
     }
 }

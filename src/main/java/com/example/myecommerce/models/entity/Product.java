@@ -1,44 +1,37 @@
 package com.example.myecommerce.models.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Table(name = "catalogue")
+@Getter
+@Setter
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     @Column(name = "product_id")
     private long id;
 
-    @Setter
     @ManyToOne
     @JoinColumn(name = "product_type_id", nullable = false)
     private ProductType productTypeId;
 
-    @Getter
-    @Setter
     @Column(name = "product_name")
     private String name;
 
-    @Getter
-    @Setter
     @Column(name = "product_price")
     private double price;
 
-    @Getter
-    @Setter
     @Column(name = "product_stock")
     private int stock;
 
-    @Getter
-    @Setter
     @Column(name = "product_image_route")
     private String productImageRoute;
 
-    @Getter
-    @Setter
     @Column(name = "is_active")
     private boolean isActive;
 
