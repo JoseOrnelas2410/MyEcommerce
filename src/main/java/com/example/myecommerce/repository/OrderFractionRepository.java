@@ -7,4 +7,6 @@ import org.yaml.snakeyaml.events.Event;
 
 import java.util.List;
 
-public interface OrderFractionRepository extends NoDeleteRepository<OrderFraction, Long> { }
+public interface OrderFractionRepository extends NoDeleteRepository<OrderFraction, Long> {
+    List<OrderFraction> getAllByOrderOrderId(long orderOrderId);
+}

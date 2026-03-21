@@ -17,9 +17,8 @@ public abstract class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     @Column(name = "user_id")
-    private long userId;
+    private Long userId;
 
-    @Setter(AccessLevel.NONE)
     @Column(name = "password")
     private String password;
 

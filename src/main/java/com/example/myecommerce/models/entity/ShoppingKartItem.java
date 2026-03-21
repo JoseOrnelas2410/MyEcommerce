@@ -7,8 +7,11 @@ import lombok.Setter;
 @Getter
 public class ShoppingKartItem {
 
-    private String productId;
+    private Long productId;
 
     private int quantity;
 
+    private double unitPrice;
+
+    private double subTotal;
 }

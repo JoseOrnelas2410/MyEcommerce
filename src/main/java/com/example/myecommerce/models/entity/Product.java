@@ -14,7 +14,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     @Column(name = "product_id")
-    private long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "product_type_id", nullable = false)
