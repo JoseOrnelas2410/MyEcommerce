@@ -1,9 +1,14 @@
 package com.example.myecommerce.models.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.context.annotation.Primary;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -11,12 +16,13 @@ import lombok.Setter;
 @DiscriminatorColumn(name = "user_type_id", discriminatorType = DiscriminatorType.INTEGER)//Aqui radica el cambio entre Customer y Admin
 @Getter
 @Setter
-
-public abstract class User {
+@NoArgsConstructor
+@AllArgsConstructor
+public abstract class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    @Column(name = "user_id")
+    @Column(name = "user_id", updatable = false)
     private Long userId;
 
     @Column(name = "password")
@@ -28,17 +34,14 @@ public abstract class User {
     @Column(name = "user_firstname")
     private String firstName;
 
-    @Column(name = "user_email")
+    @Column(name = "user_email", unique = true)//Anotacion unique true evita que dos users tengan el mismo correo
     private String email;
 
-    @Column(name = "user_phone")
+    @Column(name = "user_phone", unique = true)
     private long phone;
 
     @Column(name = "user_address")
     private String userAddress;
-
-    protected User() {
-    }
 
     protected User(
             String password,
@@ -56,7 +59,53 @@ public abstract class User {
         this.userAddress = address;
     }
 
-    public void updatePassword(String newPassword){
-        this.password=newPassword;
+    /**
+     *La interfaz UserDetails tiene como metodos abstractos, por lo cual se deben sobreescribir
+     * java.util.Collection<? extends org.springframework.security.core.GrantedAuthority> getAuthorities();
+     * java.lang.@org.jspecify.annotations.Nullable String getPassword() {}
+     * java.lang.String getUsername() {}
+     * default boolean isAccountNonExpired() {}
+     * default boolean isAccountNonLocked() {}
+     * default boolean isCredentialsNonExpired() {}
+     * default boolean isEnabled() {}
+     */
+
+    @Override
+    @NonNull
+    public Collection<? extends GrantedAuthority> getAuthorities(){
+        if(this instanceof Admin) {
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        } else return List.of(new SimpleGrantedAuthority("ROLE_CUSTOMER"));
+    }
+
+    @Override
+    @NonNull
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public String getPassword(){
+        return this.password;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked(){
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired(){
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled(){
+        return true;
     }
 }

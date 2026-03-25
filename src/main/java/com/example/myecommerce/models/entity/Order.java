@@ -25,15 +25,15 @@ public class Order {
     @JoinColumn(name = "user_id", updatable = false)
     Customer customer;
 
-    @OneToMany(mappedBy = "order")
-    @JoinColumn(name = "order_fraction_id", updatable = false)
-    final private List<OrderFraction> orderFractionsList= new ArrayList<>();//Se declara final para no mover el id del heap
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    //    @JoinColumn(name = "order", updatable = false)
+    private List<OrderFraction> orderFractionsList= new ArrayList<>();//Se declara final para no mover el id del heap
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_order_status")
     private OrderStatus orderStatus;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_payment_status")
     private PaymentStatus paymentStatus;
 

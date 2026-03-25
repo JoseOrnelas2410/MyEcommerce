@@ -25,3 +25,5 @@ logs/
 application-local.properties
 application-dev.properties
 .env
+
+/src/main/resources/application.properties
