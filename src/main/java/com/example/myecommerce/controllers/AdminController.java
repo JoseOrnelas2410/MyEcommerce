@@ -11,5 +11,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AdminController {
 
     @GetMapping("/catalogue")
-    public String adminCatalogue(){ return "/admin/catalogue"; }
+    public String adminCatalogue(){ return "admin/catalogue"; }
 }

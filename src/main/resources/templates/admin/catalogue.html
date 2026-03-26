@@ -1,11 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<h1>Hi admin welcome to your catalogue</h1>
-Here you´ll edit the catalogue
-</body>
-</html>
+<section layout:decorate="~{layouts/main-layout}"
+         xmlns:th="http://www.thymeleaf.org"
+         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <div layout:fragment="content">
+        <div class="profile-container">
+            <h2>Admin Catalogue</h2>
+            <h1>Hi admin welcome to your catalogue</h1>
+            <p>Here you will edit the catalogue</p>
+        </div>
+    </div>
+</section>

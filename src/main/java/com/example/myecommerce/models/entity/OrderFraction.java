@@ -1,12 +1,17 @@
 package com.example.myecommerce.models.entity;
 
+import com.example.myecommerce.repository.ProductRepository;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "order_fraction")
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderFraction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,8 +23,9 @@ public class OrderFraction {
     @JoinColumn(name = "order_id", updatable = false, nullable = false)
     private Order order;
 
-    @Column(name = "fraction_product_id")
-    private Long productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fraction_product")
+    private Product product;
 
     @Column(name = "fraction_products_quantity")
     private int quantity;
@@ -30,15 +36,12 @@ public class OrderFraction {
     @Column(name = "fraction_subtotal")
     private double subtotal;
 
-    public OrderFraction(){
-    }
-
     public OrderFraction(
-            Long productId,
+            Product product,
             int quantity,
             double unitPrice
     ){
-        this.productId=productId;
+        this.product=product;
         this.quantity=quantity;
         this.unitPrice=unitPrice;
         subtotal=unitPrice*quantity;

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<!-- Fragmento para el botón de navegación -->
+<th:block th:fragment="navbar-button(iconRoute,text,url)">
+    <div class="nav-item">
+        <a th:href="@{${url}}">
+            <i th:class="${iconRoute}"></i>
+            <span th:text="${text}">Default Text</span>
+        </a>
+    </div>
+</th:block>
+
+<!-- Fragmento para la barra de navegación -->
+<th:block th:fragment="navbar">
+    <nav class="nav-bar">
+        <div>
+            <th:block sec:authorize="hasRole('ROLE_CUSTOMER')">
+                <div th:replace="~{fragments/navbar :: navbar-button('icon-profile', 'CUSTOMER_PROFILE', '/customer/profile')}"></div>
+                <div th:replace="~{fragments/navbar :: navbar-button('RutaIcono','CUSTOMER_CATALOGUE','/customer/catalogue')}"></div>
+                <div th:replace="~{fragments/navbar :: navbar-button('RutaIcono','CUSTOMER_SHOPPING KART','/customer/shopping_kart')}"></div>
+                <div th:replace="~{fragments/navbar :: navbar-button('RutaIcono','CUSTOMER_ORDERS','/customer/orders')}"></div>
+            </th:block>
+            <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                <div th:replace="~{fragments/navbar :: navbar-button('icon-profile', 'ADMIN_PROFILE', '/admin/profile')}"></div>
+                <div th:replace="~{fragments/navbar :: navbar-button('RutaIcono','ADMIN_CATALOGUE','/admin/catalogue')}"></div>
+                <div th:replace="~{fragments/navbar :: navbar-button('RutaIcono','ADMIN_ORDERS','/admin/orders')}"></div>
+                <div th:replace="~{fragments/navbar :: navbar-button('RutaIcono','ADMIN_REPORTS','/admin/reports')}"></div>
+            </th:block>
+        </div>
+    </nav>
+</th:block>
+</body>
+</html>

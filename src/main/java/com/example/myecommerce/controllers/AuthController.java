@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class AuthController {
     private final UserService userService;
 
-    @GetMapping("/login")
+    @GetMapping("/login")//recibe esta liga
     public String login(){
-        return "/login";
-    }
+        return "login";
+    } //retorna este archivo html
 
     @GetMapping("/register")//Muestra la vista
     public String showRegister(Model model){

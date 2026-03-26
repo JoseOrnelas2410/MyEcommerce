@@ -18,7 +18,7 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "product_type_id", nullable = false)
-    private ProductType productTypeId;
+    private ProductType productType;
 
     @Column(name = "product_name")
     private String name;
@@ -45,7 +45,7 @@ public class Product {
             String productImageRoute,
             boolean isActive
     ) {
-        this.productTypeId = productType;
+        this.productType = productType;
         this.name = name;
         this.price = price;
         this.stock = stock;
