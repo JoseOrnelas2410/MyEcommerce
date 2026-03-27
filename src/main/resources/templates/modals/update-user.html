@@ -1,0 +1,40 @@
+<div th:fragment="modal-update-profile(userUpdateDto)"
+     class="modale fade"
+     id="updateProfileModal"
+     tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{/update_profile}" th:object="${userUpdateDto}" method="post">
+                    <div class="modal-body">
+                        <div>
+                            <label>Confirm new Password</label>
+                            <input type="password" th:field="*{name}" required>
+                        </div>
+                        <div>
+                            <label>Confirm new Password</label>
+                            <input type="password" th:field="*{firstName}" required>
+                        </div>
+                        <div>
+                            <label>Confirm new Password</label>
+                            <input type="password" th:field="*{email}" required>
+                        </div>
+                        <div>
+                            <label>Confirm new Password</label>
+                            <input type="password" th:field="*{phone}" required>
+                        </div>
+                        <div>
+                            <label>Confirm new Password</label>
+                            <input type="password" th:field="*{address}" required>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

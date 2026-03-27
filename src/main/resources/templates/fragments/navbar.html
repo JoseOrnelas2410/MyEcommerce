@@ -19,7 +19,7 @@
             <th:block sec:authorize="hasRole('ROLE_CUSTOMER')">
                 <div th:replace="~{fragments/navbar :: navbar-button('icon-profile', 'CUSTOMER_PROFILE', '/customer/profile')}"></div>
                 <div th:replace="~{fragments/navbar :: navbar-button('RutaIcono','CUSTOMER_CATALOGUE','/customer/catalogue')}"></div>
-                <div th:replace="~{fragments/navbar :: navbar-button('RutaIcono','CUSTOMER_SHOPPING KART','/customer/shopping_kart')}"></div>
+                <div th:replace="~{fragments/navbar :: navbar-button('RutaIcono','CUSTOMER_SHOPPING KART','/customer/shopping-kart')}"></div>
                 <div th:replace="~{fragments/navbar :: navbar-button('RutaIcono','CUSTOMER_ORDERS','/customer/orders')}"></div>
             </th:block>
             <th:block sec:authorize="hasRole('ROLE_ADMIN')">

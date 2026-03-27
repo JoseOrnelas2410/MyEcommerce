@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Customer | Title</title>
-</head>
-<body>
-<h1>Hi cutomer welcome to our catalogue</h1>
-Here you'll interact with our products and add them to your shopping kart.
-</body>
-</html>
+<section layout:decorate="~{layouts/main-layout}"
+         xmlns:th="http://www.thymeleaf.org"
+         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <div layout:fragment="content">
+        <h2>Customer Catlogue</h2>
+        <h1>Hi customer welcome to out Catalogue</h1>
+        <p>Here you will add items to your ShoppingKart</p>
+    </div>
+</section>

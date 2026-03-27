@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--Boton usado para navegar-->
+<th:block th:fragment="navigation-button(link,description,iconUrl)">
+    <a th:href="@{${link}}">
+        <div>
+            <p th:text="${description}">NavigationDescription</p>
+            <p th:text="${iconUrl}"></p>
+        </div>
+    </a>
+</th:block>
+
+<!--Boton usado para metodos post-->
+<th:block th:fragment="action-button(description,iconUrl)">
+    <button type="submit">
+        <p th:text="${description}"></p>
+        <p th:tex="${iconUrl}"></p>
+    </button>
+</th:block>
+
+<!--Boton usado para desplegar modales-->
+<th:block th:fragment="modal-trigger(targetId, description, iconUrl)">
+    <button type="button"
+            class="btn btn-outline-primary"
+            th:data-bs-toggle="modal"
+            th:data-bs-target="${'#' + targetId}">
+        <p th:text="${description}"></p>
+        <p th:tex="${iconUrl}"></p>
+    </button>
+</th:block>
+
+</body>
+</html>
