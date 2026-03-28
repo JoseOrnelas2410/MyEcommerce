@@ -38,7 +38,7 @@ public abstract class User implements UserDetails {
     private String email;
 
     @Column(name = "user_phone", unique = true)
-    private long phone;
+    private Long phone;
 
     @Column(name = "user_address")
     private String userAddress;

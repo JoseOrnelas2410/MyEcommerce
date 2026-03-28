@@ -1,19 +1,22 @@
 package com.example.myecommerce.models.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
+import java.math.BigDecimal;
+import java.util.UUID;
 
 @Entity
 @Table(name = "catalogue")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    @Column(name = "product_id")
+    @Column(name = "product_id", updatable = false, nullable = false)
     private Long id;
 
     @ManyToOne
@@ -24,33 +27,34 @@ public class Product {
     private String name;
 
     @Column(name = "product_price")
-    private double price;
+    private BigDecimal price;
 
     @Column(name = "product_stock")
     private int stock;
 
-    @Column(name = "product_image_route")
+
+    @Column(name = "product_image_route", unique = true)
     private String productImageRoute;
 
     @Column(name = "is_active")
     private boolean isActive;
 
-    public Product () { }
-
     public Product (
             ProductType productType,
             String name,
-            double price,
+            BigDecimal price,
             int stock,
-            String productImageRoute,
             boolean isActive
     ) {
         this.productType = productType;
         this.name = name;
         this.price = price;
         this.stock = stock;
-        this.productImageRoute = productImageRoute;
         this.isActive = isActive;
+    }
 
+    @PrePersist
+    public void setProductImageRoute() {
+        this.productImageRoute = java.util.UUID.randomUUID().toString();
     }
 }

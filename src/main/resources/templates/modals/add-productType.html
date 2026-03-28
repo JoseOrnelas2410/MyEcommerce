@@ -1,0 +1,24 @@
+<div th:fragment="modal-add-product-type"
+    class="modal-fade"
+    id="addProductTypeModal"
+    tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add a new product type/category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{/admin/add_product_type}" method="post">
+                    <div>
+                        <label>Product type</label>
+                        <input type="text" name="typeDescription" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Add product type</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

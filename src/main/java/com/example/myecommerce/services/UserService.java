@@ -1,6 +1,7 @@
 package com.example.myecommerce.services;
 
 import com.example.myecommerce.models.dto.PasswordUpdateDto;
+import com.example.myecommerce.models.dto.UserUpdateDto;
 import com.example.myecommerce.models.entity.Admin;
 import com.example.myecommerce.models.entity.Customer;
 import com.example.myecommerce.models.entity.User;
@@ -47,18 +48,41 @@ public class UserService {
     @Transactional
     public void updatePassword(
             PasswordUpdateDto passwordUpdateValues,
-            User user) throws AccessDeniedException {
+            String userEmail) throws AccessDeniedException {
         //Verificamos que el newPassword no este vacio o null
         if(passwordUpdateValues.getNewPassword().isEmpty() || passwordUpdateValues.getNewPassword().isBlank()) throw new IllegalArgumentException("New password can´t be empty or blank");
-        //Buscamos user
-        User userFound = userRepository.findUserByEmail(user.getEmail())
-                .orElseThrow(()-> new EntityNotFoundException("Current user not found"));
         //Confirmamos coincidencia de password
-        boolean matches = passwordEncoder.matches(passwordUpdateValues.getOldPassword(),userFound.getPassword());
-        if (matches) {
-            userFound.setPassword(passwordEncoder.encode(passwordUpdateValues.getNewPassword()));//seteamos new password encriptada
-        } else {
-            throw new IllegalArgumentException("The actual password provided is incorrect.");
+        User actualUser = findUserAndConfirmPassword(
+                passwordUpdateValues.getOldPassword(),
+                userEmail);
+        actualUser.setPassword(passwordEncoder.encode(passwordUpdateValues.getNewPassword()));
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @Transactional
+    public boolean updateUser(
+            UserUpdateDto userUpdateValues,
+            String email) throws AccessDeniedException {
+        User user = findUserAndConfirmPassword(userUpdateValues.getPassword(),email);
+        user.setName(userUpdateValues.getName());
+        user.setFirstName(userUpdateValues.getFirstName());
+        /*
+        Verificamos si existe cambio de email, de haberlo puede generar conflicto en
+        con la sesion abierta y arrojar error.
+         */
+        if (!user.getEmail().equals(userUpdateValues.getEmail())) {
+            user.setEmail(userUpdateValues.getEmail());
+            return true;
         }
+        user.setPhone(userUpdateValues.getPhone());
+        user.setUserAddress(userUpdateValues.getAddress());
+        return false;
+    }
+
+    private User findUserAndConfirmPassword(String password, String email) throws AccessDeniedException {
+        User userFound = userRepository.findUserByEmail(email)
+                .orElseThrow(()-> new EntityNotFoundException("User no found with email" + email));
+        if (!(passwordEncoder.matches(password,userFound.getPassword()))) throw new AccessDeniedException("The actual password provided is incorrect.");
+        return userFound;
     }
 }

@@ -1,6 +1,7 @@
 package com.example.myecommerce.controllers;
 
 import com.example.myecommerce.models.dto.PasswordUpdateDto;
+import com.example.myecommerce.models.dto.UserUpdateDto;
 import com.example.myecommerce.models.entity.Admin;
 import com.example.myecommerce.models.entity.Customer;
 import com.example.myecommerce.models.entity.User;
@@ -42,17 +43,38 @@ public class AuthController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("update_password")
     public String updatePassword(
+            //Buscar @Valid para implementar verificacion de campos
             @ModelAttribute("passwordUpdateDto")PasswordUpdateDto passwordUpdateDto,
             @AuthenticationPrincipal User user,
             RedirectAttributes redirectAttributes){
-        System.out.println("Aviso controllerAuth metodo updatePassword");
         try {
-            userService.updatePassword(passwordUpdateDto, user);
+            userService.updatePassword(passwordUpdateDto, user.getUsername());
             redirectAttributes.addFlashAttribute("success","password updated succesfully.");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error",e.getCause());
         }
-        System.out.println("Aviso controllerAuth metodo updatePassword: userService llamado, retornando vista");
         return (user instanceof Admin) ? "redirect:/admin/profile":"redirect:/customer/profile";//Aqui que me recomiendas devolver para llamar al controller indicado?
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("update_profile")
+    public String updateProfile(
+            //Buscar @Valid para implementar verificacion de campos
+            @ModelAttribute("userUpdateDto")UserUpdateDto userUpdateDto,
+            @AuthenticationPrincipal User user,
+            RedirectAttributes redirectAttributes) {
+        boolean emailChanges = false;
+        try{
+            emailChanges = userService.updateUser(userUpdateDto, user.getUsername());
+            redirectAttributes.addFlashAttribute("succes","profile updated succesfully");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getCause());
+        }
+        if (emailChanges) {
+            return "redirect:/logout"; //Si se cambia el email es necesario desloguear a user para no mostrar error y solicitar nuevo login.
+        } else {
+            return (user instanceof Admin) ? "redirect:/admin/profile":"redirect:/customer/profile";//De no haber cambio en email dirijimos a la pagina ROLE/profile
+        }
+    }
+
 }

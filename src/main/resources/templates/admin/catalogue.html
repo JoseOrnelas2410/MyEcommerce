@@ -4,8 +4,48 @@
     <div layout:fragment="content">
         <div class="admin-catalogue-container">
             <h2>Admin Catalogue</h2>
-            <h1>Hi admin welcome to your catalogue</h1>
-            <p>Here you will edit the catalogue</p>
+            <p>Here is your catalogue</p>
+            <!--Boton para modal AddProduct
+            <div th:replace="~{fragments/buttons :: modal-trigger(updatePasswordModal,'UPDATE PASSWORD', iconUrl)}"></div>
+            -->
+            <!--Catalogo de categorias-->
+            <div th:if="${#lists.isEmpty(productTypeList)}">
+                <p>Sorry no product type/category found.</p>
+                <div th:replace="~{fragments/buttons :: modal-trigger(addProductTypeModal,'ADD CATEGORY', iconUrl)}"></div>
+            </div>
+            <div th:unless="${#lists.isEmpty(products)}">
+                <!--Catalogo de productos-->
+                <div th:if="${#lists.isEmpty(products)}">
+                    <p>Sorry no products found, please add one.</p>
+                    <div th:replace="~{fragments/buttons :: modal-trigger(addProductModal,'ADD PRODUCT', iconUrl)}"></div>
+                </div>
+                <div th:unless="${#lists.isEmpty(products)}">
+                    <div th:replace="~{fragments/buttons :: modal-trigger(addProductModal,'ADD PRODUCT', iconUrl)}"></div>
+                    <div th:each="product : ${products}">
+                        <div>
+                            <p th:text="${product.id}">ProductID</p>
+                            <p th:text="${product.name}">ProductName</p>
+                            <p th:text="${product.price}">ProductPrice</p>
+                            <p th:text="${product.stock}">Stock</p>
+                            <p th:text="${product.productType.productTypeDescription}">ProductType</p>
+                            <!--Boton para modal EditarProducto
+                            <div th:replace="~{fragments/buttons :: modal-trigger(updatePasswordModal,'UPDATE PASSWORD', iconUrl)}"></div>
+                            -->
+                        </div>
+                    </div>
+                </div>
+                <!--Contenedor para la tabla de categorias-->
+                <div>
+                    <div th:replace="~{fragments/buttons :: modal-trigger(addProductTypeModal,'ADD CATEGORY', iconUrl)}"></div>
+                    <div th:each="productType: ${productTypeList}">
+                        <p th:text="${productType.key}"></p>
+                        <p th:text="${productType.value}"></p>
+                    </div>
+                </div>
+                <div th:replace="modals/add-product :: modal-add-product(addProductDto, productTypeList)"></div>
+            </div>
+            <!--Insertar modal para editar producto-->
+            <div th:replace="modals/add-productType :: modal-add-product-type"></div>
         </div>
     </div>
 </section>

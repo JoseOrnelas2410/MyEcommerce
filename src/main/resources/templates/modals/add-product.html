@@ -1,0 +1,56 @@
+<div th:fragment="modal-add-product(addProductDto, productTypeList)"
+     class="modal fade"
+     id="addProductModal"
+     tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add a new product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{/admin/add_product}" th:object="${addProductDto}" method="post">
+                    <div class="modal-body">
+
+                        <div>
+                            <label>Product image</label>
+                            <input type="file" th:field="*{image}" required>
+                        </div>
+
+                        <div>
+                            <label>Product Name</label>
+                            <input type="text" th:field="*{name}" required>
+                        </div>
+
+                        <div>
+                            <label>Product Type</label>
+                            <select th:field="*{productTypeId}" class="form-select" required>
+                                <option value="" selected disabled>Category...</option>
+                                <option th:each="entry : ${productTypeList}"
+                                        th:value="${entry.key}"
+                                        th:text="${entry.value}"></option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label>Price</label>
+                            <input type="number" th:fiel="price" required>
+                        </div>
+
+                        <div>
+                            <label>Is active?</label>
+                            <select th:fiel="isActive" class="form-select" required>
+                                <option value=true selected>Active / Show</option>
+                                <option value=false>Not Active / Hidden</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

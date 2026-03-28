@@ -13,9 +13,11 @@
             <div th:replace="~{fragments/profile-field :: user-field(Phone,${userData.phone})}"></div>
             <div th:replace="~{fragments/profile-field :: user-field(Address,${userData.userAddress})}"></div>
             <div>
+                <!--Botones para modales-->
                 <div th:replace="~{fragments/buttons :: modal-trigger(updatePasswordModal,'UPDATE PASSWORD', iconUrl)}"></div>
                 <div th:replace="~{fragments/buttons :: modal-trigger(updateProfileModal,'UPDATE PROFILE', iconUrl)}"></div>
             </div>
+            <!--Modales-->
             <div th:replace="~{modals/update-password :: modal-update-password(${passwordUpdateDto})}"></div>
             <div th:replace="~{modals/update-user :: modal-update-profile(${userUpdateDto})}"></div>
             </div>

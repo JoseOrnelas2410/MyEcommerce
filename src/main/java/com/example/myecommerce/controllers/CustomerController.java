@@ -25,10 +25,17 @@ public class CustomerController {
             Model model,
             @AuthenticationPrincipal Customer currentCustomer
     ) {
-        Customer customerData = userService.findCustomerByEmail(currentCustomer.getEmail());
-        model.addAttribute("userData",customerData);
+        Customer customerFound = userService.findCustomerByEmail(currentCustomer.getEmail());
+        model.addAttribute("userData",customerFound);
         model.addAttribute("passwordUpdateDto", new PasswordUpdateDto());
-        model.addAttribute("userUpdateDto", new UserUpdateDto());
+        model.addAttribute("userUpdateDto", new UserUpdateDto(
+                customerFound.getName(),
+                customerFound.getFirstName(),
+                customerFound.getEmail(),
+                customerFound.getPhone(),
+                customerFound.getUserAddress(),
+                ""
+        ));
         return "profile";
     }
 

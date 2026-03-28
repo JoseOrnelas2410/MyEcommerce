@@ -1,5 +1,5 @@
 <div th:fragment="modal-update-profile(userUpdateDto)"
-     class="modale fade"
+     class="modal fade"
      id="updateProfileModal"
      tabindex="-1">
     <div class="modal-dialog">
@@ -10,29 +10,34 @@
             </div>
             <div class="modal-body">
                 <form th:action="@{/update_profile}" th:object="${userUpdateDto}" method="post">
-                    <div class="modal-body">
-                        <div>
-                            <label>Confirm new Password</label>
-                            <input type="password" th:field="*{name}" required>
-                        </div>
-                        <div>
-                            <label>Confirm new Password</label>
-                            <input type="password" th:field="*{firstName}" required>
-                        </div>
-                        <div>
-                            <label>Confirm new Password</label>
-                            <input type="password" th:field="*{email}" required>
-                        </div>
-                        <div>
-                            <label>Confirm new Password</label>
-                            <input type="password" th:field="*{phone}" required>
-                        </div>
-                        <div>
-                            <label>Confirm new Password</label>
-                            <input type="password" th:field="*{address}" required>
-                        </div>
-
+                    <div>
+                        <label>Name</label>
+                        <input type="text" th:field="*{name}" required>
                     </div>
+                    <div>
+                        <label>FirstName</label>
+                        <input type="text" th:field="*{firstName}" required>
+                    </div>
+                    <div>
+                        <label>E-mail</label>
+                        <input type="email" th:field="*{email}" required>
+                    </div>
+                    <div>
+                        <label>Phone</label>
+                        <input type="tel" th:field="*{phone}" required>
+                    </div>
+                    <div>
+                        <label>Address</label>
+                        <input type="text" th:field="*{address}" required>
+                    </div>
+                    <div>
+                        <label>Confirm with password</label>
+                        <input type="password" th:field="*{password}" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                    <p>Warning! If you change the email you will need to re authenticate with the new email you provided.</p>
                 </form>
             </div>
         </div>
