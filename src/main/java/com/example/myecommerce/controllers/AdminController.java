@@ -2,6 +2,7 @@ package com.example.myecommerce.controllers;
 
 import com.example.myecommerce.models.dto.AddProductDto;
 import com.example.myecommerce.models.dto.PasswordUpdateDto;
+import com.example.myecommerce.models.dto.UpdateProductDto;
 import com.example.myecommerce.models.dto.UserUpdateDto;
 import com.example.myecommerce.models.entity.Admin;
 import com.example.myecommerce.models.entity.Product;
@@ -16,7 +17,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -64,11 +67,11 @@ public class AdminController {
         AddProductDto addProductDto = new AddProductDto();
         Map<Long,String> productTypeList= productTypeService.getAllProductTypes();
         Page<Product> productPage = productService.getAllProductsByPage(page);
-        model.addAttribute("products",productPage.getContent());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", productPage.getTotalPages());
+        model.addAttribute("productPage", productPage);
         model.addAttribute("addProductDto", addProductDto);
-        model.addAttribute("productTypeList", productTypeList);
+        model.addAttribute("typeList", productTypeList);
+        //Lista de categorias no aparece en pantalla, confirmamos su obtencion
+        System.out.println("Lista de productType" + productTypeList);
         return "admin/catalogue";
     }
 
@@ -78,9 +81,42 @@ public class AdminController {
             @ModelAttribute("typeDescription")String description
     ){
         productTypeService.addProductType(description);
-        return "redirect:admin/catalogue";
+        return "redirect:/admin/catalogue";
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PostMapping("/add_product")
+    public String addProduct(
+            @ModelAttribute("addProductDto")AddProductDto addProductDto,
+            RedirectAttributes redirectAttributes
+    ) {
+        System.out.println("Producto obtenido"+addProductDto.toString());
+        try {
+            System.out.println("Guardando product");
+            productService.saveProduct(addProductDto);
+            System.out.print("Succes" + "Product saved");
+        } catch (IOException e) {
+            System.out.print("Error "+" Failed saving product"+ e.getMessage());
+        }
+        return "redirect:/admin/catalogue";
+
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PostMapping("/update_product")
+    public String updateProduct(
+            @ModelAttribute("updateProductData") UpdateProductDto updateProductDto
+    ){
+        System.out.println("Update data recived in:" + updateProductDto.toString());
+        try {
+            System.out.println("AdminController intentando hacer update de product");
+            productService.updateProduct(updateProductDto);
+        } catch (IOException e) {
+            System.out.println("Error"+ e.getMessage());
+            throw new RuntimeException("Error updating product" + e.getMessage());
+        }
+        return "redirect:/admin/catalogue";
+    }
     /**
      *Endpoints para orders
      */

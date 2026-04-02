@@ -32,13 +32,14 @@ public class Product {
     @Column(name = "product_stock")
     private int stock;
 
-
     @Column(name = "product_image_route", unique = true)
     private String productImageRoute;
 
     @Column(name = "is_active")
     private boolean isActive;
 
+    @Column(name = "image_type")
+    private String extension;
     public Product (
             ProductType productType,
             String name,

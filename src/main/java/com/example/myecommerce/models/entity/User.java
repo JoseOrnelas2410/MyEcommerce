@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -43,6 +44,12 @@ public abstract class User implements UserDetails {
     @Column(name = "user_address")
     private String userAddress;
 
+    @Column(name = "user_image")
+    private String userImageName;
+
+    @Column(name = "image_type")
+    private String extension;
+
     protected User(
             String password,
             String name,
@@ -57,6 +64,11 @@ public abstract class User implements UserDetails {
         this.email = email;
         this.phone = phone;
         this.userAddress = address;
+    }
+
+    @PrePersist
+    public void setUserImageName(){
+        this.userImageName= UUID.randomUUID().toString();
     }
 
     /**

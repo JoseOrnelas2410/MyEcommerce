@@ -2,6 +2,7 @@ package com.example.myecommerce.services;
 
 import com.example.myecommerce.models.entity.ProductType;
 import com.example.myecommerce.repository.ProductTypeRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -31,5 +32,10 @@ public class ProductTypeService {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ProductType addProductType(String description){
         return productTypeRepository.save(new ProductType(description));
+    }
+
+    public ProductType getProductTypeById(Long id){
+        return productTypeRepository.findById(id)
+                .orElseThrow(()->new EntityNotFoundException("Category not Found"));
     }
 }

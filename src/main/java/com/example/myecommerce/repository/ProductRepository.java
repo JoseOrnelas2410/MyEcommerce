@@ -22,6 +22,4 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT DISTINCT p FROM Product p "+
     "LEFT JOIN FETCH p.productType")
     Page<Product> findAllProductsWithDetails(Pageable pageable);
-
-
 }

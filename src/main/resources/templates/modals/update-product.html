@@ -1,0 +1,71 @@
+<div th:fragment="modal-update-product(productTypeList)"
+     class="modal fade"
+     id="updateProductModal"
+     tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form
+                        th:action="@{/admin/update_product}"
+                        th:object="${addProductDto}"
+                        enctype="multipart/form-data"
+                        method="post"
+                >
+                    <input type="text" name="id" id="updateProductID" hidden>
+                    <div>
+                        <label>ProductImage
+                            <p id="updateProductImage"></p>
+                            <input type="file" name="image">
+                        </label>
+                    </div>
+
+                    <div>
+                        <label>Name
+                            <input type="text" name="name" id="updateProductName" required>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label>Price
+                            <input type="number" step=".01" name="price" id="updateProductPrice" required>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label>Stock
+                            <input type="number" step="1" name="stock" id="updateProductStock" required>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label>ProductType
+                            <select name="productTypeId" id="updateProductTypeId" class="form-select" required>
+                                <option value="${product.productType.productTypeDescription}" selected></option>
+                                <option th:each="entry : ${typeList.entrySet()}"
+                                        th:value="${entry.key}"
+                                        th:text="${entry.value}"></option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label>Is active?
+                            <select name="active" id="updateProductIsActive" class="form-select" required>
+                                <option value="true" selected>Active/Show</option>
+                                <option value="false">Not Active/Hidden</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

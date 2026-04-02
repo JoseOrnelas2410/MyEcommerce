@@ -12,28 +12,24 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddProductDto {
-
+public class UpdateProductDto {
+    private Long id;
     private MultipartFile image;
-
     private String name;
-
-    private Long productTypeId;
-
     private BigDecimal price;
-
     private int stock;
-
+    private Long productTypeId;
     private boolean active;
 
     @Override
     public String toString() {
-        return "AddProductDto{" +
-                "image=" + image.getName() +
+        return "UpdateProductDto{" +
+                "id=" + id +
+                ", image=" + image.getName() +
                 ", name=" + name +
-                ", productTypeId=" + productTypeId +
                 ", price=" + price +
                 ", stock=" + stock +
+                ", productTypeId=" + productTypeId +
                 ", active=" + active +
                 '}';
     }
