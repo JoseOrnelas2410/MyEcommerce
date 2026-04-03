@@ -2,10 +2,7 @@
          xmlns:th="http://www.thymeleaf.org"
          xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <div layout:fragment="content">
-        <div class="admin-catalogue-container">
-            <h2>Admin Catalogue</h2>
-            <p>Here is your catalogue</p>
-            <!--Catalogo de categorias-->
+        <div class="admin-catalogue-page">
             <!--Para if/unless sobre colecciones funcionen bien los metodos usar
                                     Maps    #maps.
                                     List    #list.
@@ -14,59 +11,68 @@
                 <p>Sorry no product type/category found.</p>
                 <div th:replace="~{fragments/buttons :: modal-trigger(addProductTypeModal,'ADD YOUR FIRST CATEGORY', iconUrl)}"></div>
             </div>
+
             <div th:unless="${#maps.isEmpty(typeList)}">
                 <!--Contenedor para la tabla de productos-->
                 <!--Ningun producto registrado-->
-                <div class="products-section">
-                    Products Section
-                    <div th:if="${productPage.totalElements == 0}">
-                        <p>No hay productos registrados aún.</p>
-                        <div th:replace="~{fragments/buttons :: modal-trigger(addProductModal,'ADD YOUR FIRST PRODUCT', iconUrl)}"></div>
-                    </div>
+                <div class="catalogue-sections-container">
+                    <div class="products-section">
+                        Products Section
 
-                    <!--Pagina en blanco-->
-                    <div th:if="${productPage.totalElements > 0 && !productPage.hasContent()}">
-                        <p>Error: Esta página no contiene resultados. <a th:href="@{/admin/catalogue}">Volver al inicio</a></p>
-                    </div>
+                        <div th:if="${productPage.totalElements == 0}">
+                            <p>No hay productos registrados aún.</p>
+                            <div th:replace="~{fragments/buttons :: modal-trigger(addProductModal,'ADD YOUR FIRST PRODUCT', iconUrl)}"></div>
+                        </div>
 
-                    <!--Productos registrados-->
-                    <div th:if="${productPage.hasContent()}">
-                        <div th:replace="~{fragments/buttons :: modal-trigger(addProductModal,'ADD A NEW PRODUCT', iconUrl)}"></div>
-                        <div class="products-section">
-                            <div th:each="product : ${productPage.content}">
-                                <p th:text="${product.name}">Name</p>
-                                <p th:text="${product.productType.productTypeDescription}">ProductType</p>
-                                <p th:text="${product.price}">Price</p>
-                                <p th:text="${product.stock}">Stock</p>
-                                <p th:text="${product.productImageRoute}">ImageName</p>
-                                <p th:text="${product.isActive}">Status</p>
-                                <!--Boton editarProduct-->
-                                <button type="button"
-                                        class="btn btn-outline-primary"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#updateProductModal"
-                                        th:data-bs-image="|${product.productImageRoute}${product.extension}|"
-                                        th:data-bs-id="${product.id}"
-                                        th:data-bs-name="${product.name}"
-                                        th:data-bs-price="${product.price}"
-                                        th:data-bs-stock="${product.stock}"
-                                        th:data-bs-productType="${product.productType.id}"
-                                        th:data-bs-active="${product.active}"
-                                >
-                                    <p>UPDATE PRODUCT</p>
-                                    <p>Icon</p>
-                                </button>
+                        <!--Pagina en blanco-->
+                        <div th:if="${productPage.totalElements > 0 && !productPage.hasContent()}">
+                            <p>Error: Esta página no contiene resultados. <a th:href="@{/admin/catalogue}">Volver al inicio</a></p>
+                        </div>
+
+                        <!--Productos registrados-->
+                        <div th:if="${productPage.hasContent()}">
+                            <div th:replace="~{fragments/buttons :: modal-trigger(addProductModal,'ADD A NEW PRODUCT', iconUrl)}"></div>
+                            <div class="products-catalogue">
+                                <div th:each="product : ${productPage.content}">
+                                    <div class="product-row">
+                                        <p th:text="${product.name}">Name</p>
+                                        <p th:text="${product.productType.productTypeDescription}">ProductType</p>
+                                        <p th:text="${product.price}">Price</p>
+                                        <p th:text="${product.stock}">Stock</p>
+                                        <img th:src="@{|/images/products/${product.productImageRoute}${product.extension}|}"
+                                             class="admin-catalogue-img"
+                                             alt="ProductImage">
+                                        <p th:text="${product.productImageRoute}">ImageName</p>
+                                        <p th:text="${product.isActive}">Status</p>
+                                        <!--Boton editarProduct-->
+                                        <button type="button"
+                                                class="btn btn-outline-primary"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#updateProductModal"
+                                                th:data-bs-image="|${storagePath}${product.productImageRoute}${product.extension}|"
+                                                th:data-bs-id="${product.id}"
+                                                th:data-bs-name="${product.name}"
+                                                th:data-bs-price="${product.price}"
+                                                th:data-bs-stock="${product.stock}"
+                                                th:data-bs-productType="${product.productType.id}"
+                                                th:data-bs-active="${product.active}"
+                                        >
+                                            <p>UPDATE PRODUCT</p>
+                                            <p>Icon</p>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!--Contenedor para la tabla de categorias-->
-                <div class="categories-section">
-                    <div th:replace="~{fragments/buttons :: modal-trigger(addProductTypeModal,'ADD A NEW CATEGORY', iconUrl)}"></div>
-                    <div th:each="entry : ${typeList.entrySet()}">
-                        <p th:text="${entry.key}"></p>
-                        <p th:text="${entry.value}"></p>
+                    <!--Contenedor para la tabla de categorias-->
+                    <div class="categories-section">
+                        <div th:replace="~{fragments/buttons :: modal-trigger(addProductTypeModal,'ADD A NEW CATEGORY', iconUrl)}"></div>
+                        <div th:each="entry : ${typeList.entrySet()}">
+                            <p th:text="${entry.key}"></p>
+                            <p th:text="${entry.value}"></p>
+                        </div>
                     </div>
                 </div>
             </div>

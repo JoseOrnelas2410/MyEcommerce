@@ -33,7 +33,7 @@ public class StorageService {
     }
 
     //Public ya que puede ser necesario para mostrar imagenes a users
-    private Path getBasePath(StorageType storageType){
+    public Path getBasePath(StorageType storageType){
         Path path;
         switch (storageType){
             case PRODUCT -> path=storageConfig.getProductImagesLocation();

@@ -8,12 +8,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration//Hace que spring tome esto como configuration
@@ -41,7 +37,7 @@ public class SecurityConfig {
                  * Establecemos procesos que necesitan authenticated y que no necesitan
                  */
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/css/**","/images/**","/public/**").permitAll()
+                                .requestMatchers("/static/css/**","/images/**","/public/**").permitAll()
                                 .requestMatchers("/login","/register").permitAll()
                                 .anyRequest().authenticated()
                         )

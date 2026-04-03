@@ -1,0 +1,73 @@
+.header {
+    display: flex;
+    align-content: center;
+    justify-content: space-between;
+}
+
+.page-body {
+    display: flex;
+    padding-left: 7rem;
+    padding-right: 1rem;
+}
+
+.nav-bar {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    width: 80px;
+    font-size: 1rem;
+    position: fixed;
+    top: 6rem;
+    left: 1rem;
+    background: lightgray;
+    border: 2px solid black;
+}
+
+.catalogue-sections-container {
+    display: flex;
+    gap: 2rem;
+    justify-content: space-between;
+}
+
+.products-section {
+    display: flex;
+    flex-direction: column;
+    width: 80rem;
+    background: lightgray;
+    border: 2px solid black;
+}
+
+.products-catalogue {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-catalogue-img {
+    width: 2rem;
+    height: 2rem;
+    object-fit: cover;
+    border-radius: 1rem;
+}
+
+.product-row {
+    display: flex;
+    width: 100%;
+    padding: 1rem;
+    justify-content: space-between;
+}
+
+.categories-section {
+    display: flex;
+    flex-direction: column;
+    width: 25rem;
+    background: lightgray;
+    border: 2px solid black;
+}
+
+.button {
+    display: flex;
+    width: 115px;
+    height: 38px;
+    align-content: center;
+    justify-content: space-between;
+}

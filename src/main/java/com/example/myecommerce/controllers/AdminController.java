@@ -1,5 +1,7 @@
 package com.example.myecommerce.controllers;
 
+import com.example.myecommerce.config.StorageConfig;
+import com.example.myecommerce.enums.StorageType;
 import com.example.myecommerce.models.dto.AddProductDto;
 import com.example.myecommerce.models.dto.PasswordUpdateDto;
 import com.example.myecommerce.models.dto.UpdateProductDto;
@@ -9,6 +11,7 @@ import com.example.myecommerce.models.entity.Product;
 import com.example.myecommerce.models.entity.ProductType;
 import com.example.myecommerce.services.ProductService;
 import com.example.myecommerce.services.ProductTypeService;
+import com.example.myecommerce.services.StorageService;
 import com.example.myecommerce.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +36,7 @@ public class AdminController {
     private final UserService userService;
     private final ProductService productService;
     private final ProductTypeService productTypeService;
+    private final StorageService storageService;
 
     /**
      * Endpoint para profile
@@ -64,12 +69,14 @@ public class AdminController {
             @RequestParam(defaultValue = "0") int page,
             Model model
     ){
+        Path ruta = storageService.getBasePath(StorageType.PRODUCT);
         AddProductDto addProductDto = new AddProductDto();
         Map<Long,String> productTypeList= productTypeService.getAllProductTypes();
         Page<Product> productPage = productService.getAllProductsByPage(page);
         model.addAttribute("productPage", productPage);
         model.addAttribute("addProductDto", addProductDto);
         model.addAttribute("typeList", productTypeList);
+        model.addAttribute("storagePath", ruta);
         //Lista de categorias no aparece en pantalla, confirmamos su obtencion
         System.out.println("Lista de productType" + productTypeList);
         return "admin/catalogue";

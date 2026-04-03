@@ -7,7 +7,7 @@
 <body>
 <!--Boton usado para navegar-->
 <th:block th:fragment="navigation-button(link,description,iconUrl)">
-    <a th:href="@{${link}}">
+    <a th:href="@{${link}}" class="nav-button">
         <div>
             <p th:text="${description}">NavigationDescription</p>
             <p th:text="${iconUrl}"></p>
@@ -17,7 +17,8 @@
 
 <!--Boton usado para metodos post-->
 <th:block th:fragment="action-button(description,iconUrl)">
-    <button type="submit">
+    <button type="submit"
+            class="button">
         <p th:text="${description}"></p>
         <p th:tex="${iconUrl}"></p>
     </button>
@@ -26,7 +27,7 @@
 <!--Boton usado para desplegar modales-->
 <th:block th:fragment="modal-trigger(targetId, description, iconUrl)">
     <button type="button"
-            class="btn btn-outline-primary"
+            class="button"
             th:data-bs-toggle="modal"
             th:data-bs-target="${'#' + targetId}">
         <p th:text="${description}"></p>
