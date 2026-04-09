@@ -2,14 +2,20 @@ package com.example.myecommerce.repository;
 
 import com.example.myecommerce.models.entity.Product;
 import jakarta.persistence.Entity;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    Product getProductById(Long id);
+    @Override
+    Optional<Product> findById(Long aLong);
 
     //Query para catalogo de clientes
     @Query("SELECT DISTINCT p FROM Product p "+
@@ -22,4 +28,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT DISTINCT p FROM Product p "+
     "LEFT JOIN FETCH p.productType")
     Page<Product> findAllProductsWithDetails(Pageable pageable);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT p FROM Product p WHERE p.id = :id ")
+    Optional<Product> findByIdWithLock(@Param("id")Long id);
 }

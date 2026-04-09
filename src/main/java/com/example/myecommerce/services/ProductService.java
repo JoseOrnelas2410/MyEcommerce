@@ -2,8 +2,10 @@ package com.example.myecommerce.services;
 
 import com.example.myecommerce.enums.StorageType;
 import com.example.myecommerce.models.dto.AddProductDto;
+import com.example.myecommerce.models.dto.CartFractionDto;
 import com.example.myecommerce.models.dto.UpdateProductDto;
 import com.example.myecommerce.models.entity.Product;
+import com.example.myecommerce.models.entity.ShoppingKartItem;
 import com.example.myecommerce.repository.ProductRepository;
 import com.example.myecommerce.util.FileUtil;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,7 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +34,7 @@ public class ProductService {
     private final StorageService storageService;
 
     public Page<Product> getAllProductsByPage(int page) {
-        Pageable pageable = PageRequest.of(page, 15, Sort.by("name").ascending());
+        Pageable pageable = PageRequest.of(page, 20, Sort.by("name").ascending());
         return productRepository.findAllProductsWithDetails(pageable);
     }
 
@@ -57,11 +61,15 @@ public class ProductService {
         return null;
     }
 
+    @PreAuthorize("isAuthenticated()")
+    public void updateProductStock(Product product){
+        productRepository.save(product);
+    }
+
     @Transactional
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void updateProduct(UpdateProductDto updateProductData) throws IOException {
-        Product product = productRepository.getProductById(updateProductData.getId());
-        if (product==null) throw new EntityNotFoundException("Product not found");
+        Product product = findProductById(updateProductData.getId());
         product.setProductType(productTypeService.getProductTypeById(updateProductData.getProductTypeId()));
         product.setName(updateProductData.getName());
         product.setPrice(updateProductData.getPrice());
@@ -72,5 +80,41 @@ public class ProductService {
             storageService.saveImage(updateProductData.getImage(), product.getProductImageRoute()+newImageType,StorageType.PRODUCT);
             product.setExtension(newImageType);
         }
+    }
+
+    @Transactional
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public Page<Product> findAllProductsForCustomers(int page){
+        Pageable pageable = PageRequest.of(page, 20, Sort.by("name").ascending());
+        return productRepository.findAllActiveProducts(pageable);
+    }
+
+    @Transactional
+    @PreAuthorize("isAuthenticated()")
+    public List<CartFractionDto> getCartWithDetails(List<ShoppingKartItem> items) {
+        return items.stream()
+                .map(fraction -> {
+                    Product productData = findProductById(fraction.getProductId());
+                    return new CartFractionDto(
+                            productData.getProductImageRoute()+productData.getExtension(),
+                            productData.getId(),
+                            productData.getName(),
+                            productData.getProductType().getProductTypeDescription(),
+                            productData.getPrice(),
+                            fraction.getQuantity()
+                    );
+                }).collect(Collectors.toList());
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    public Product findProductById(Long id){
+        return productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Product unavalible"));
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public Product findByIdWithLock(Long id) {
+        return productRepository.findByIdWithLock(id)
+                .orElseThrow(()-> new EntityNotFoundException("Product unavalible"));
     }
 }

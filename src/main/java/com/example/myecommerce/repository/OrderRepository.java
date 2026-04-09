@@ -35,7 +35,5 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
     //Necesario para balance total
     List<Order> findAllByDateTimeBetween(LocalDateTime from, LocalDateTime to);
 
-    /*Busquedas para customer*/
-    Page<Order> findAllByCustomer(Customer customer, Pageable pageable) ;//Usado para customer
-
+    Page<Order> findOrdersByCustomer(Customer customer, Pageable pageable);
 }

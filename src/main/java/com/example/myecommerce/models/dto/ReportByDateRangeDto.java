@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
@@ -12,5 +14,5 @@ import lombok.Setter;
 public class ReportByDateRangeDto {
     RankingProductFraction topProduct = new RankingProductFraction();
     RankingProductFraction bottomProduct = new RankingProductFraction();
-    double totalSold;
+    BigDecimal totalSold;
 }

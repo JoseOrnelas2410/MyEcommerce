@@ -2,8 +2,40 @@
          xmlns:th="http://www.thymeleaf.org"
          xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <div layout:fragment="content">
-        <h2>Customer Orders</h2>
-        <h1>Hi customer welcome to your orders</h1>
-        <p>Here you will see the orders you've made</p>
+        <div class="customer-subpage-header">
+            <p th:text="${name}"></p>
+            <p th:text="${email}"></p>
+        </div>
+        <div class="customer-orders-content"></div>
+        <div th:if="${page.totalElements == 0}">
+            <p>You have not created an order yet.</p>
+        </div>
+        <div th:if="${page.isEmpty() && page.totalElements > 0}">
+            <p>The page you've requested is empty try with another one</p>
+        </div>
+        <div th:if="${page.hasContent()}">
+            <div th:each="order : ${page.content}"
+            class="customer-order">
+                <p th:text="${order.orderId}">id</p>
+                <div class="outlined-container">
+                    <p th:text="${order.orderStatus.orderStatusDescription}">orderStatus</p>
+                </div>
+                <p class="price-tag">Total</p>
+                <p th:text="${order.total}" class="ammount">Price</p>
+                <p th:text="${order.dateTime}">TimeStamp</p>
+                <p th:text="${order.totalProducts}">TotalItems</p>
+                <button>See details</button>
+            </div>
+
+            <div th:replace="~{fragments/paginator :: paginator(
+                '/customer/orders',
+                ${page.number},
+                ${page.totalPages},
+                ${page.isFirst()},
+                ${page.isLast()},
+                ${page.hasPrevious()},
+                ${page.hasNext()})}">
+            </div>
+        </div>
     </div>
 </section>

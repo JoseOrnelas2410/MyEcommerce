@@ -7,20 +7,19 @@
 <body>
 <!--Boton usado para navegar-->
 <th:block th:fragment="navigation-button(link,description,iconUrl)">
-    <a th:href="@{${link}}" class="nav-button">
+    <a th:href="@{${link}}" class="button">
         <div>
             <p th:text="${description}">NavigationDescription</p>
             <p th:text="${iconUrl}"></p>
         </div>
     </a>
 </th:block>
-
 <!--Boton usado para metodos post-->
 <th:block th:fragment="action-button(description,iconUrl)">
     <button type="submit"
             class="button">
         <p th:text="${description}"></p>
-        <p th:tex="${iconUrl}"></p>
+        <i th:class="${iconUrl}"></i>
     </button>
 </th:block>
 

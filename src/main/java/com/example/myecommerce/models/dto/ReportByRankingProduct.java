@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.sql.Array;
 
 @NoArgsConstructor
@@ -13,5 +14,5 @@ import java.sql.Array;
 @Getter
 public class ReportByRankingProduct {
     RankingProductFraction[] rankingProductList;
-    double totalSold;
+    BigDecimal totalSold;
 }

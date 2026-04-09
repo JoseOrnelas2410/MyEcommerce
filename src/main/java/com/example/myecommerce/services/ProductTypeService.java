@@ -18,7 +18,7 @@ public class ProductTypeService {
     private final ProductTypeRepository productTypeRepository;
 
     @Transactional
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public Map<Long, String> getAllProductTypes(){
 
         return productTypeRepository.findAll().stream()

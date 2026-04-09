@@ -66,19 +66,15 @@ public class AdminController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/catalogue")
     public String adminCatalogue(
-            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(name = "page", defaultValue = "0") int page,
             Model model
     ){
-        Path ruta = storageService.getBasePath(StorageType.PRODUCT);
         AddProductDto addProductDto = new AddProductDto();
         Map<Long,String> productTypeList= productTypeService.getAllProductTypes();
         Page<Product> productPage = productService.getAllProductsByPage(page);
-        model.addAttribute("productPage", productPage);
+        model.addAttribute("page", productPage);
         model.addAttribute("addProductDto", addProductDto);
         model.addAttribute("typeList", productTypeList);
-        model.addAttribute("storagePath", ruta);
-        //Lista de categorias no aparece en pantalla, confirmamos su obtencion
-        System.out.println("Lista de productType" + productTypeList);
         return "admin/catalogue";
     }
 

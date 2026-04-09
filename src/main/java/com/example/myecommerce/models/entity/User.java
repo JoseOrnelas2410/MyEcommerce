@@ -71,6 +71,13 @@ public abstract class User implements UserDetails {
         this.userImageName= UUID.randomUUID().toString();
     }
 
+    @Override
+    public String toString(){
+        return "id" + this.userId +
+                "\nname" + this.name + " " + this.firstName +
+                "\nemail" + this.email;
+    }
+
     /**
      *La interfaz UserDetails tiene como metodos abstractos, por lo cual se deben sobreescribir
      * java.util.Collection<? extends org.springframework.security.core.GrantedAuthority> getAuthorities();

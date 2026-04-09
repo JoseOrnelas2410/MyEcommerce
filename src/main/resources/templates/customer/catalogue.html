@@ -1,9 +1,78 @@
 <section layout:decorate="~{layouts/main-layout}"
          xmlns:th="http://www.thymeleaf.org"
          xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-    <div layout:fragment="content">
-        <h2>Customer Catlogue</h2>
-        <h1>Hi customer welcome to out Catalogue</h1>
-        <p>Here you will add items to your ShoppingKart</p>
+    <div layout:fragment="content" class="page-content">
+        <script th:src="@{/js/catalogue-quantity.js}"></script>
+        <div class="customer-products-container">
+            <div th:if="${page.totalElements == 0}">
+                <p>Sorry we dont have any product registered yec, please come back later</p>
+            </div>
+
+            <div th:if="${page.totalElements>0 && !page.hasContent()}">
+                <p>The page you've requested is empty try with another one</p>
+            </div>
+
+            <div th:if="${page.hasContent()}">
+                <div class="customer-catalogue-section">
+                    <div th:each="product : ${page.content}" class="product-card">
+                        <img th:src="@{|/images/products/${product.productImageRoute}${product.extension}|}"
+                             class="product-card-img"
+                             alt="ProductImage">
+                        <div class="product-card-data">
+                            <p th:text="${product.name}" class="product-card-name"></p>
+                            <div class="outlined-container">
+                                <p th:text="${product.productType.productTypeDescription}"></p>
+                            </div>
+                            <p class="price-tag">Price</p>
+                            <p th:text="'$' + ${product.price} + 'MXN'" class="ammount"></p>
+                        </div>
+                        <form th:action="@{/customer/add_to_shopping_cart}"
+                                  method="post">
+                            <input type="hidden" name="page" th:value="${page.number}">
+                            <input type="hidden" name="category" th:value="${categoryid}">
+                            <input type="hidden" name="id" th:value="${product.id}">
+                            <div class="quantity-selector-container">
+                                <button type="button"
+                                        class="quantity-selector-minus"
+                                        onclick="changeQuantity(this, -1)"
+                                        disabled>
+                                    -
+                                </button>
+
+                                <input type="number"
+                                       name="quantity"
+                                       value="0"
+                                       readonly
+                                       step="1"
+                                       class="qty-input"
+                                       th:data-stock="${product.stock}"
+                                >
+
+                                <button type="button"
+                                        class="quantity-selector-plus"
+                                        onclick="changeQuantity(this, 1)">
+                                    +
+                                </button>
+                            </div>
+                            <button class="button-add-to-cart" type="submit" disabled>
+                                <i class="bi bi-cart-plus"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div th:replace="~{fragments/paginator ::paginator('/customer/catalogue',
+            ${page.number},
+            ${page.totalPages},
+            ${page.isFirst()},
+            ${page.isLast()},
+            ${page.hasPrevious()},
+            ${page.hasNext()})}">
+            </div>
+        </div>
+            <!--Contenedor filtros-->
+        <div class="customer-filters-container">
+
+        </div>
     </div>
 </section>

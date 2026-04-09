@@ -2,8 +2,52 @@
          xmlns:th="http://www.thymeleaf.org"
          xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <div layout:fragment="content">
-        <h2>Customer ShoppingKart</h2>
-        <h1>Hi customer welcome to your shoppingKart</h1>
-        <p>Here you will buy what you've selected</p>
+        <div class="customer-subpage-header">
+            <p th:text="${name}"></p>
+            <p th:text="${email}"></p>
+        </div>
+        <div th:if="${#lists.isEmpty(cart)}">
+            <p>Your cart is empty, please add products to your shopping kart</p>
+        </div>
+        <div th:unless="${#lists.isEmpty(cart)}">
+            <form th:action="@{/customer/create_order}" method="post">
+                <div th:replace="~{fragments/buttons :: action-button('PAY ORDER','bi bi-credit-card')}">
+                    Boton que generara mi orden
+                </div>
+            </form>
+            <div class="shopping-cart-content">
+                <div th:each="product : ${cart}"
+                    class="">
+                    <img th:src="@{|/images/products/${product.getImageName()}|}"
+                         alt="ProductImage">
+                    <p th:text="${product.getProductName()}"></p>
+                    <p th:text="${product.getCategory()}"></p>
+                    <p th:text="${product.getPrice()}"></p>
+                    <form th:action="@{/customer/update_product_quantity}">
+                        <input type="hidden" name="id" th:value="${product.getProductId()}">
+                        <div class="quantity-selector-container">
+                            <button type="submit"
+                                    name="action"
+                                    value="decrease"
+                                    class="quantity-selector-minus"
+                            >
+                                -
+                            </button>
+                            <p class="qty-input"
+                               th:text="${product.getQuantity()}">
+                                quantity
+                            </p>
+                            <button type="submit"
+                                    name="action"
+                                    value="increase"
+                                    class="quantity-selector-plus"
+                            >
+                                +
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </section>

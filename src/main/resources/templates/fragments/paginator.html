@@ -1,0 +1,26 @@
+<th:block th:fragment="paginator(endPoint, currentPage, totalPages, isFirst, isLast, hasPrevious, hasNext)">
+    <nav aria-label="Page navigation" th:if="${totalPages > 0}">
+        <ul class="pagination justify-content-center align-items-center">
+
+            <li class="page-item" th:classappend="${isFirst} ? 'disabled'">
+                <a class="page-link" th:href="@{${endPoint}(page=0)}">First</a>
+            </li>
+
+            <li class="page-item" th:classappend="${!hasPrevious} ? 'disabled'">
+                <a class="page-link" th:href="@{${endPoint}(page=${currentPage - 1})}">Previous</a>
+            </li>
+
+            <li class="page-item disabled">
+                <span class="page-link" th:text="|Page ${currentPage + 1} of ${totalPages}|"></span>
+            </li>
+
+            <li class="page-item" th:classappend="${!hasNext} ? 'disabled'">
+                <a class="page-link" th:href="@{${endPoint}(page=${currentPage + 1})}">Next</a>
+            </li>
+
+            <li class="page-item" th:classappend="${isLast} ? 'disabled'">
+                <a class="page-link" th:href="@{${endPoint}(page=${totalPages - 1})}">Last</a>
+            </li>
+        </ul>
+    </nav>
+</th:block>

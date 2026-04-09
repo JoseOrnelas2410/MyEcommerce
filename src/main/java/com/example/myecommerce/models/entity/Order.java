@@ -1,10 +1,9 @@
 package com.example.myecommerce.models.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,7 +42,7 @@ public class Order {
 
     @Column(name = "subtotal", updatable = false)
     @Setter(AccessLevel.NONE)
-    private double subTotal;
+    private BigDecimal subTotal;
 
     @Column(name = "iva", updatable = false)
     @Setter(AccessLevel.NONE)
@@ -50,7 +50,7 @@ public class Order {
 
     @Column(name = "total", updatable = false)
     @Setter(AccessLevel.NONE)
-    private double total;
+    private BigDecimal total;
 
     @Column(name = "order_date_time", updatable = false)
     private LocalDateTime dateTime;
@@ -78,17 +78,13 @@ public class Order {
     }
 
     public void setOrderFractionsList(List<OrderFraction> fractions){
-        if (!fractions.isEmpty()){//Confirmamos que las fracciones no esten vacias ni sean nulas
-            this.orderFractionsList.addAll(fractions);
-            fractions.forEach(f -> f.setOrder(this));
-        }
         this.orderFractionsList.addAll(fractions);
         this.totalProducts = orderFractionsList.stream()
                 .mapToInt(OrderFraction::getQuantity)
                 .sum();
         this.subTotal = orderFractionsList.stream()
-                .mapToDouble(OrderFraction::getSubtotal)
-                .sum();
-        this.total = this.subTotal*(1+((double)this.iva/100));
+                .map(OrderFraction::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        this.total = this.subTotal.multiply(BigDecimal.valueOf((double)iva/100).add(BigDecimal.ONE));
     }
 }
