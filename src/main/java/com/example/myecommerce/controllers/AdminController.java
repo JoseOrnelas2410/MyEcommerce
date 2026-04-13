@@ -7,12 +7,10 @@ import com.example.myecommerce.models.dto.PasswordUpdateDto;
 import com.example.myecommerce.models.dto.UpdateProductDto;
 import com.example.myecommerce.models.dto.UserUpdateDto;
 import com.example.myecommerce.models.entity.Admin;
+import com.example.myecommerce.models.entity.Order;
 import com.example.myecommerce.models.entity.Product;
 import com.example.myecommerce.models.entity.ProductType;
-import com.example.myecommerce.services.ProductService;
-import com.example.myecommerce.services.ProductTypeService;
-import com.example.myecommerce.services.StorageService;
-import com.example.myecommerce.services.UserService;
+import com.example.myecommerce.services.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,9 +35,12 @@ public class AdminController {
     private final ProductService productService;
     private final ProductTypeService productTypeService;
     private final StorageService storageService;
+    private final OrderService orderService;
+    private final OrderStatusService orderStatusService;
+    private final PaymentStatusService paymentStatusService;
 
     /**
-     * Endpoint para profile
+     * Profile
      */
     @GetMapping("/profile")
     public String adminProfile(
@@ -61,9 +62,8 @@ public class AdminController {
     }
 
     /**
-     *Endpoints para catalogo, productos y productType
+     *Catalogo y acciones
      */
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/catalogue")
     public String adminCatalogue(
             @RequestParam(name = "page", defaultValue = "0") int page,
@@ -78,7 +78,6 @@ public class AdminController {
         return "admin/catalogue";
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping("/add_product_type")
     public String addProductType(
             @ModelAttribute("typeDescription")String description
@@ -87,7 +86,6 @@ public class AdminController {
         return "redirect:/admin/catalogue";
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping("/add_product")
     public String addProduct(
             @ModelAttribute("addProductDto")AddProductDto addProductDto,
@@ -105,7 +103,6 @@ public class AdminController {
 
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping("/update_product")
     public String updateProduct(
             @ModelAttribute("updateProductData") UpdateProductDto updateProductDto
@@ -121,10 +118,53 @@ public class AdminController {
         return "redirect:/admin/catalogue";
     }
     /**
-     *Endpoints para orders
+     *Orders y acciones
      */
     @GetMapping("/orders")
-    public String adminOrders(){ return "admin/orders"; }
+    public String adminOrders(
+            @RequestParam(name = "page",defaultValue = "0") int pageNumber,
+            @RequestParam(name = "order_status", defaultValue = "0") Long order_status,
+            Model model
+    ){
+        Page<Order> page = orderService.getOrders(pageNumber, order_status);
+        Map<Long,String> statusList = orderStatusService.getAllOrderStatus();
+        model.addAttribute("page", page);
+        model.addAttribute("status_list", statusList);
+        model.addAttribute("order_status", order_status);
+        return "admin/orders";
+    }
+
+    @GetMapping("/update_order")
+    public String updateOrder(
+            @RequestParam(name="id") Long id,
+            Model model
+    ){
+        Map<Long, String> payment_status = paymentStatusService.findAll();
+        model.addAttribute("payment_status", payment_status);
+        Map<Long, String> order_status = orderStatusService.getAllOrderStatus();
+        model.addAttribute("order_status", order_status);
+        Order orderFound = orderService.getOrderById(id);
+        model.addAttribute("order", orderFound);
+        return "/admin/update-order";
+    }
+
+    @PostMapping("/update_order_status")
+    public String updateOrderStatus(
+            @RequestParam(name="id") Long id,
+            @RequestParam(name="pay_status", defaultValue = "0") Long payment_status,
+            @RequestParam(name ="ord_status", defaultValue = "0") Long order_status
+    ){
+        try {
+            orderService.updateOrder(id, payment_status, order_status);
+        } catch (Exception e) {
+            System.out.println("Exception" + e.getMessage());
+        }
+        return "redirect:/admin/orders";
+    }
+
+    /**
+     * Reportes
+     */
 
     @GetMapping("/reports")
     public String adminReports(){ return "admin/reports"; }

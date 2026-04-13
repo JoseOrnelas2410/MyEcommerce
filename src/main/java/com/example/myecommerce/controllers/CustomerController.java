@@ -37,10 +37,7 @@ public class CustomerController {
     private final OrderService orderService;
 
     /**
-     * Endpoint para profile
-     * @param model
-     * @param currentCustomer
-     * @return
+     * Profile
      */
 
     @GetMapping("/profile")
@@ -63,18 +60,19 @@ public class CustomerController {
     }
 
     /**
-     * Endpoints para catalogo y acciones del catalogo
+     * Catalogo y acciones
      */
 
     @GetMapping("/catalogue")
-    public String cusomerCatalogue(
+    public String customerCatalogue(
             @RequestParam(name = "page", defaultValue = "0") int page,
-            @RequestParam(name = "category", defaultValue = "0") Long id,
+            @RequestParam(name = "category", defaultValue = "0") Long category,
             Model model
     ) {
-        Map<Long, String> typeList= productTypeService.getAllProductTypes();
-        model.addAttribute("typeList", typeList);
-        Page<Product> products = productService.findAllProductsForCustomers(page);
+        Map<Long, String> categories = productTypeService.getAllProductTypes();
+        model.addAttribute("categories", categories);//Lista de categorias para filtrado
+        model.addAttribute("actual_category", category);//Categoria actual para la navegacion
+        Page<Product> products = productService.findProductsForCustomers(page, category);
         model.addAttribute("page", products);
         return "/customer/catalogue";
     }
@@ -100,7 +98,7 @@ public class CustomerController {
     }
 
     /**
-     * Endpoints para ver shoppingCart y post order
+     * ShoppingCart y acciones
      */
 
     @GetMapping("/shopping_cart")
@@ -126,8 +124,32 @@ public class CustomerController {
         return (isOrderCreated) ? "redirect:/customer/catalogue" : "redirect/customer/shopping_cart";
     }
 
+    @GetMapping("/update_quantity")
+    public String updateQuantity(
+            @RequestParam(name= "id") Long id,
+            @RequestParam(name = "action") String action
+    ) {
+        int maxStock= productService.findProductById(id).getStock();
+
+        try {
+            this.shoppingCart.updateQuantity(id,action,maxStock);
+        } catch (Exception e) {
+            System.out.println("Exception "+ e.getMessage());
+        }
+
+        return "redirect:/customer/shopping_cart";
+    }
+
+    @GetMapping("/remove_fsc")
+    public String removeFromShoppingKart(
+            @RequestParam(name = "id") Long id
+    ) {
+        this.shoppingCart.removeItem(id);
+        return "redirect:/customer/shopping_cart";
+    }
+
     /**
-     *Endpoint para ver lista de orders
+     *Orders y acciones
      */
 
     @GetMapping("/orders")
@@ -141,5 +163,23 @@ public class CustomerController {
         model.addAttribute("name", (user.getName()+" "+user.getFirstName()));
         model.addAttribute("email", user.getEmail());
         return "/customer/orders";
+    }
+
+    @GetMapping("/order_details")
+    public String orderDetails(
+            @RequestParam(name="id") Long id,
+            @AuthenticationPrincipal User user,
+            Model model
+    ) {
+        try {
+            Order orderFound = orderService.getOrderByUser(id, user.getUsername());
+            model.addAttribute("order", orderFound);
+            model.addAttribute("name", user.getName()+" "+user.getFirstName());
+            model.addAttribute("email", user.getEmail());
+            return "/customer/order-details";
+        } catch (Exception e) {
+            System.out.println("Exception: "+e.getMessage());
+            return "redirect:/customer/orders";
+        }
     }
 }

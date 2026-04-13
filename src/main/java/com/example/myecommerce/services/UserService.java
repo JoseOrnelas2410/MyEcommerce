@@ -10,6 +10,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -79,6 +80,16 @@ public class UserService {
         user.setUserAddress(userUpdateValues.getAddress());
         return false;
     }
+
+    /**
+     * Pendiente, necesario para un refresh de las httpSession.
+     * @param user
+     */
+    @PreAuthorize("isAuthenticated()")
+    private void refreshHttpsSession(User user){
+
+    }
+
 
     private User findUserAndConfirmPassword(String password, String email) throws AccessDeniedException {
         User userFound = userRepository.findUserByEmail(email)

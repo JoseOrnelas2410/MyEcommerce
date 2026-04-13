@@ -2,10 +2,40 @@
          xmlns:th="http://www.thymeleaf.org"
          xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <div layout:fragment="content">
-        <div class="admin-orders-container">
-            <h2>Admin Orders</h2>
-            <h1>Hi admin welcome to Orders</h1>
-            <p>Here you will edit the orderStatu,payment,etc.</p>
+        <div class="admin-page-filter">
+            <div class="content-container">
+                <div th:if="${page.totalElements == 0}">
+                    <h1>No orders made, try again later</h1>
+                </div>
+                <div th:if="${page.isEmpty() && page.totalElements!=0}">
+                    <h1>The page you've requested is empty try with another one.</h1>
+                </div>
+                <div th:if="${page.hasContent()}">
+                    <div class="admin-table">
+                        <div th:each="order:${page.content}">
+                            <p th:text="${order.orderId}"></p>
+                            <p th:text="${order.customer.email}"></p>
+                            <div th:replace="~{/fragments/buttons :: navigation-button(
+                                    '/admin/update_order?id='+${order.orderId},
+                                    'UPDATE ORDER',
+                                    'bi bi-pencil-square')}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="filter-container">
+                <form th:action="@{/admin/orders}" method="get">
+                    <select name="order_status">
+                        <option selected disabled>Select a category</option>
+                        <option th:each="status: ${status_list.entrySet()}"
+                                th:value="${status.key}"
+                                th:text="${status.value}">
+                        </option>
+                    </select>
+                    <div th:replace="~{fragments/buttons :: action-button('FILTER','bi bi-funnel')}"></div>
+                </form>
+                <div th:replace="~{/fragments/buttons :: navigation-button('/admin/orders','RESET FILTER','bi bi-arrow-clockwise')}"></div>
+            </div>
         </div>
     </div>
 </section>

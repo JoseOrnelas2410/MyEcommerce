@@ -61,18 +61,30 @@
                     </div>
                 </div>
             </div>
-            <div th:replace="~{fragments/paginator ::paginator('/customer/catalogue',
+            <div th:replace="~{fragments/paginator ::paginator(
+            '/customer/catalogue',
             ${page.number},
             ${page.totalPages},
             ${page.isFirst()},
             ${page.isLast()},
             ${page.hasPrevious()},
-            ${page.hasNext()})}">
+            ${page.hasNext()},
+            ${actual_category})}">
             </div>
         </div>
             <!--Contenedor filtros-->
-        <div class="customer-filters-container">
-
+        <div class="categories-section">
+            <form th:action="@{/customer/catalogue}" method="get">
+                <select name="category" required>
+                    <option selected disabled>Select a category...</option>
+                    <option th:each="category: ${categories.entrySet()}"
+                            th:value="${category.key}"
+                            th:text="${category.value}">
+                    </option>
+                </select>
+                <div th:replace="~{/fragments/buttons :: action-button('FILTER','bi bi-funnel')}"></div>
+            </form>
+            <div th:replace="~{/fragments/buttons :: navigation-button('/customer/catalogue','RESET FILTER','bi bi-arrow-clockwise')}"></div>
         </div>
     </div>
 </section>

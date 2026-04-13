@@ -33,11 +33,22 @@ public class ShoppingCart implements Serializable {
 
 
 
-    public void increaseItemQuantity(){
-
+    public void updateQuantity(Long id, String action, int maxStock){
+        items.stream().filter(item->item.getProductId().equals(id))
+                .findFirst()
+                .ifPresent(item-> {
+                    if (action.equalsIgnoreCase("decrease")) {
+                        if (item.getQuantity()<=1) removeItem(item.getProductId());
+                        else item.setQuantity(item.getQuantity()-1);
+                    }
+                    if (action.equalsIgnoreCase("increase")) {
+                        if (item.getQuantity()>=maxStock) throw new IllegalArgumentException("Max Stock reached");
+                        else item.setQuantity(item.getQuantity()+1);
+                    }
+                });
     }
 
-    public void dimisItemQuantity(Long id) {
+    public void decreaseQuantity(Long id) {
         items.stream().filter(item->item.getProductId().equals(id))
                 .findFirst()
                 .ifPresent( item -> {
@@ -46,7 +57,7 @@ public class ShoppingCart implements Serializable {
                     } else {
                         item.setQuantity(item.getQuantity()-1);
                     }
-                        });
+                });
     }
 
     public void removeItem(Long id){

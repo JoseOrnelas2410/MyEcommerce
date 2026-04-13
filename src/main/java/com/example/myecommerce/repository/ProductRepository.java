@@ -17,12 +17,20 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Override
     Optional<Product> findById(Long aLong);
 
-    //Query para catalogo de clientes
+    //Query's para clientes
     @Query("SELECT DISTINCT p FROM Product p "+
     "LEFT JOIN FETCH p.productType "+
     "WHERE p.isActive = true "+
     "AND p.stock > 0 ")
     Page<Product> findAllActiveProducts(Pageable pageable);
+
+    @Query("SELECT DISTINCT p FROM Product p " +
+            "LEFT JOIN FETCH p.productType c " +
+            "WHERE p.isActive = true " +
+            "AND p.stock > 0" +
+            "AND c.id = :category")
+    Page<Product> findActiveProductsByCategory(Pageable pageable,
+                                               @Param("category") Long category);
 
     //Query para lista de admin
     @Query("SELECT DISTINCT p FROM Product p "+

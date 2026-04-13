@@ -2,9 +2,13 @@
          xmlns:th="http://www.thymeleaf.org"
          xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <div layout:fragment="content">
-        <div class="customer-subpage-header">
-            <p th:text="${name}"></p>
-            <p th:text="${email}"></p>
+        <link rel="stylesheet" th:href="@{/css/customer-shopping-cart.css}">
+        <div class="customer-page-header">
+            <i class="bi bi-person-bounding-box"></i>
+            <div class="customer-header-data">
+                <h1 th:text="${name}"></h1>
+                <h2 th:text="${email}"></h2>
+            </div>
         </div>
         <div th:if="${#lists.isEmpty(cart)}">
             <p>Your cart is empty, please add products to your shopping kart</p>
@@ -17,35 +21,42 @@
             </form>
             <div class="shopping-cart-content">
                 <div th:each="product : ${cart}"
-                    class="">
+                    class="shopping-cart-item">
                     <img th:src="@{|/images/products/${product.getImageName()}|}"
                          alt="ProductImage">
-                    <p th:text="${product.getProductName()}"></p>
-                    <p th:text="${product.getCategory()}"></p>
-                    <p th:text="${product.getPrice()}"></p>
-                    <form th:action="@{/customer/update_product_quantity}">
-                        <input type="hidden" name="id" th:value="${product.getProductId()}">
-                        <div class="quantity-selector-container">
-                            <button type="submit"
-                                    name="action"
-                                    value="decrease"
-                                    class="quantity-selector-minus"
-                            >
-                                -
-                            </button>
-                            <p class="qty-input"
-                               th:text="${product.getQuantity()}">
-                                quantity
-                            </p>
-                            <button type="submit"
-                                    name="action"
-                                    value="increase"
-                                    class="quantity-selector-plus"
-                            >
-                                +
-                            </button>
+                    <div class="shopping-cart-item-data">
+                        <p th:text="${product.getProductName()}" class="shopping-cart-item-name"></p>
+                        <p th:text="${product.getCategory()}" class="outlined-container"></p>
+                        <div class="shopping-cart-item-price-container">
+                            <p class="price-tag">Price</p>
+                            <p th:text="${product.getPrice()}" class="ammount"></p>
                         </div>
-                    </form>
+                        <form th:action="@{/customer/update_quantity}">
+                            <input type="hidden" name="id" th:value="${product.getProductId()}">
+                            <div class="quantity-selector-container">
+                                <button type="submit"
+                                        name="action"
+                                        value="decrease"
+                                        class="quantity-selector-minus"
+                                >
+                                    -
+                                </button>
+                                <p class="qty-input"
+                                   th:text="${product.getQuantity()}">
+                                    quantity
+                                </p>
+                                <button type="submit"
+                                        name="action"
+                                        value="increase"
+                                        class="quantity-selector-plus"
+                                >
+                                    +
+                                </button>
+                            </div>
+                        </form>
+                        <div th:replace="~{/fragments/buttons ::navigation-button('/customer/remove_fsc?id=' + ${product.productId},'REMOVE PRODUCT','bi bi-trash')}"></div>
+
+                    </div>
                 </div>
             </div>
         </div>

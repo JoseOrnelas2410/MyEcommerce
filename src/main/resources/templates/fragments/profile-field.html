@@ -1,6 +1,9 @@
 
 <!-- Fragmento para mostrar al user su información-->
 <th:block th:fragment="user-field(title,fieldContent)">
-    <p th:text="${title}">FieldTitle</p>
-    <p th:text="${fieldContent}">FieldContent</p>
+    <div class="field">
+        <label th:text="${title}" class="field-title">FieldTitle</label>
+        <span th:text="${fieldContent}">FieldContent</span>
+    </div>
+
 </th:block>

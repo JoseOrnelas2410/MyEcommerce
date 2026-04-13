@@ -1,0 +1,23 @@
+<section layout:decorate="~{layouts/main-layout}"
+         xmlns:th="http://www.thymeleaf.org"
+         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <div layout:fragment="content">
+        <link rel="stylesheet" th:href="@{/css/order-details.css}">
+        <div class="customer-page-header">
+            <i class="bi bi-person-bounding-box"></i>
+            <div class="customer-header-data">
+                <h1 th:text="${name}"></h1>
+                <h2 th:text="${email}"></h2>
+            </div>
+        </div>
+
+        <p th:text="${order.orderStatus.orderStatusDescription}"></p>
+        <p th:text="${order.totalProducts}"></p>
+        <p th:text="${order.total}"></p>
+        <div th:each="fraction : ${order.orderFractionsList}"
+             class="fraction">
+            <img th:src="@{|/images/products/${fraction.product.productImageRoute}${fraction.product.extension}|}">
+            <p th:text="${fraction.product.name}"></p>
+        </div>
+    </div>
+</section>

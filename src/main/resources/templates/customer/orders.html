@@ -2,40 +2,54 @@
          xmlns:th="http://www.thymeleaf.org"
          xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <div layout:fragment="content">
-        <div class="customer-subpage-header">
-            <p th:text="${name}"></p>
-            <p th:text="${email}"></p>
+        <div class="customer-page-header">
+            <i class="bi bi-person-bounding-box"></i>
+            <div class="customer-header-data">
+                <h1 th:text="${name}"></h1>
+                <h2 th:text="${email}"></h2>
+            </div>
         </div>
-        <div class="customer-orders-content"></div>
-        <div th:if="${page.totalElements == 0}">
-            <p>You have not created an order yet.</p>
-        </div>
-        <div th:if="${page.isEmpty() && page.totalElements > 0}">
-            <p>The page you've requested is empty try with another one</p>
-        </div>
-        <div th:if="${page.hasContent()}">
-            <div th:each="order : ${page.content}"
-            class="customer-order">
-                <p th:text="${order.orderId}">id</p>
-                <div class="outlined-container">
-                    <p th:text="${order.orderStatus.orderStatusDescription}">orderStatus</p>
+        <div class="customer-orders-content">
+
+            <div th:if="${page.totalElements == 0}">
+                <p>You have not created an order yet.</p>
+            </div>
+            <div th:if="${page.isEmpty() && page.totalElements > 0}">
+                <p>The page you've requested is empty try with another one</p>
+            </div>
+            <div th:if="${page.hasContent()}">
+                <div class="orders">
+                    <div th:each="order : ${page.content}"
+                         class="customer-order">
+                        <p th:text="${order.orderId}">id</p>
+                        <div class="outlined-container">
+                            <p th:text="${order.orderStatus.orderStatusDescription}">orderStatus</p>
+                        </div>
+                        <p class="price-tag">Total</p>
+                        <p th:text="${order.total}" class="ammount">Price</p>
+                        <p th:text="${order.dateTime}">TimeStamp</p>
+                        <p th:text="${order.totalProducts}">TotalItems</p>
+                        <a th:href="@{/customer/order_details(id=${order.orderId})}"
+                           class="button">
+                            <p>SEE DETAILS</p>
+                            <div class="divider"></div>
+                            <i class="bi bi-info-square"></i>
+                        </a>
+                    </div>
+
+                    <div th:replace="~{fragments/paginator :: paginator(
+                        '/customer/orders',
+                        ${page.number},
+                        ${page.totalPages},
+                        ${page.isFirst()},
+                        ${page.isLast()},
+                        ${page.hasPrevious()},
+                        ${page.hasNext()},
+                        0)}">
+                    </div>
                 </div>
-                <p class="price-tag">Total</p>
-                <p th:text="${order.total}" class="ammount">Price</p>
-                <p th:text="${order.dateTime}">TimeStamp</p>
-                <p th:text="${order.totalProducts}">TotalItems</p>
-                <button>See details</button>
             </div>
 
-            <div th:replace="~{fragments/paginator :: paginator(
-                '/customer/orders',
-                ${page.number},
-                ${page.totalPages},
-                ${page.isFirst()},
-                ${page.isLast()},
-                ${page.hasPrevious()},
-                ${page.hasNext()})}">
-            </div>
         </div>
     </div>
 </section>

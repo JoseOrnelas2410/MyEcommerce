@@ -1,0 +1,63 @@
+<section layout:decorate="~{layouts/main-layout}"
+         xmlns:th="http://www.thymeleaf.org"
+         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <div layout:fragment="content">
+        <div class="update-order">
+            <h1 th:text="${order.orderId}"></h1>
+            <p th:text="${order.customer.username}"></p>
+            <p th:text="${order.orderAddress}"></p>
+            <p>Date_Time</p>
+            <p th:text="${order.dateTime}"></p>
+            <p>Order Details</p>
+            <div th:each="fraction :${order.orderFractionsList}">
+                <img th:src="@{|/images/products/${fraction.product.productImageRoute}${fraction.product.extension}|}">
+                <p th:text="${fraction.product.id}"></p>
+                <p th:text="${fraction.quantity}"></p>
+                <p th:text="${fraction.unitPrice}"></p>
+                <p th:text="${fraction.subtotal}"></p>
+            </div>
+            <p>Total</p>
+            <p th:text="${order.subTotal}"></p>
+            <p>Total + IVA</p>
+            <p th:text="${order.total}"></p>
+            <!--Si aun no se ha autorizado el pago PaymentStatud!=-->
+            <div th:if="${order.paymentStatus.paymentStatusId != 3}">
+                <p th:text="${order.orderStatus.orderStatusDescription}">
+                <form th:action="@{/admin/update_order_status}" method="post">
+                    <input type="hidden" name="id" th:value="${order.orderId}" required>
+                    <select name="pay_status">
+                        <option th:text="${order.paymentStatus.paymentStatusDescription}"
+                                selected
+                                disabled></option>
+                        <option th:each="p_status : ${payment_status.entrySet()}"
+                                th:value="${p_status.key}"
+                                th:text="${p_status.value}"
+                        >
+                        </option>
+                    </select>
+                    <div th:replace="~{/fragments/buttons :: action-button(
+                        'SAVE CHANGES',
+                        'bi bi-floppy')}"></div>
+                </form>
+            </div>
+            <div th:unless="${order.paymentStatus.paymentStatusId !=3}">
+                <p th:text="${order.paymentStatus.paymentStatusDescription}"></p>
+                <form th:action="@{/admin/update_order_status}" method="post">
+                    <input type="hidden"  name="id" th:value="${order.orderId}" required>
+                    <select name="ord_status">
+                        <option th:text="${order.orderStatus.orderStatusDescription}"
+                                selected
+                                disabled></option>
+                        <option th:each="o_status : ${order_status.entrySet()}"
+                                th:value="${o_status.key}"
+                                th:text="${o_status.value}"></option>
+                    </select>
+                    <div th:replace="~{/fragments/buttons :: action-button(
+                        'SAVE CHANGES',
+                        'bi bi-floppy')}"></div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</section>

@@ -4,8 +4,13 @@
          xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
          sec:authorize="isAuthenticated()">
     <div layout:fragment="content">
-        <h2 th:text="|${userData.name} ${userData.firstName}|">Customer CompleteName</h2>
-        <h1 th:text="${userData.username}">Customer@Email.com</h1>
+        <div class="customer-page-header">
+            <i class="bi bi-person-bounding-box"></i>
+            <div class="customer-header-data">
+                <h1 th:text="|${userData.name} ${userData.firstName}|">Customer CompleteName</h1>
+                <h2 th:text="${userData.username}">Customer@Email.com</h2>
+            </div>
+        </div>
         <div>
             <div th:replace="~{fragments/profile-field :: user-field(Name,${userData.name})}"></div>
             <div th:replace="~{fragments/profile-field :: user-field(FirstName,${userData.firstName})}"></div>
@@ -14,8 +19,8 @@
             <div th:replace="~{fragments/profile-field :: user-field(Address,${userData.userAddress})}"></div>
             <div>
                 <!--Botones para modales-->
-                <div th:replace="~{fragments/buttons :: modal-trigger(updatePasswordModal,'UPDATE PASSWORD', iconUrl)}"></div>
-                <div th:replace="~{fragments/buttons :: modal-trigger(updateProfileModal,'UPDATE PROFILE', iconUrl)}"></div>
+                <div th:replace="~{fragments/buttons :: modal-trigger(updatePasswordModal,'UPDATE PASSWORD', 'bi bi-shield-fill-exclamation')}"></div>
+                <div th:replace="~{fragments/buttons :: modal-trigger(updateProfileModal,'UPDATE PROFILE', 'bi bi-pencil-square')}"></div>
             </div>
             <!--Modales-->
             <div th:replace="~{modals/update-password :: modal-update-password(${passwordUpdateDto})}"></div>

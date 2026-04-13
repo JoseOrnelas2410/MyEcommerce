@@ -7,11 +7,11 @@
 <body>
 <!--Boton usado para navegar-->
 <th:block th:fragment="navigation-button(link,description,iconUrl)">
-    <a th:href="@{${link}}" class="button">
-        <div>
-            <p th:text="${description}">NavigationDescription</p>
-            <p th:text="${iconUrl}"></p>
-        </div>
+    <a th:href="@{${link}}"
+       class="button">
+        <p th:text="${description}">NavigationDescription</p>
+        <div class="divider"></div>
+        <i th:class="${iconUrl}"></i>
     </a>
 </th:block>
 <!--Boton usado para metodos post-->
@@ -19,6 +19,7 @@
     <button type="submit"
             class="button">
         <p th:text="${description}"></p>
+        <div class="divider"></div>
         <i th:class="${iconUrl}"></i>
     </button>
 </th:block>
@@ -30,7 +31,8 @@
             th:data-bs-toggle="modal"
             th:data-bs-target="${'#' + targetId}">
         <p th:text="${description}"></p>
-        <p th:tex="${iconUrl}"></p>
+        <div class="divider"></div>
+        <i th:class="${iconUrl}"></i>
     </button>
 </th:block>
 

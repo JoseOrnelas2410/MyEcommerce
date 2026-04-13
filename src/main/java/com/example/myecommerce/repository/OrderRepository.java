@@ -12,28 +12,37 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order,Long> {
 
-    /*Busquedas para Admin*/
-    Page<Order> findAllByDateTimeBetween(LocalDateTime from, LocalDateTime to, Pageable pageable);//Usado para reportes
-
-    //El uso de Left Join permite que si no hay fractions no genere un crash
-    @Query("SELECT DISTINCT o FROM Order o " + //Busqueda de orders evitando duplicados con Distinct
-            "LEFT JOIN FETCH o.orderFractionsList f " + //Adjuntamos todas sus orderFraction
-            "LEFT JOIN FETCH f.product p " + //Adjuntamos el Producto de cada orderFraction
-            "LEFT JOIN FETCH p.productType pt " + //Adjuntamos el ProductType de cada Product
-            "WHERE o.orderStatus.orderStatusDescription = 'DELIVERED' " + //Delimitamos a solo pedidos entregados
-            "AND o.dateTime BETWEEN :from AND :to" //Delimitamos rango de tiempo
-    )
-    List<Order> findAllDeliveredWithDetailsBetween(
-            @Param("from") LocalDateTime from,
-            @Param("to") LocalDateTime to
-    );
-
-    //Necesario para balance total
-    List<Order> findAllByDateTimeBetween(LocalDateTime from, LocalDateTime to);
-
+    /**
+     * Customer
+     */
     Page<Order> findOrdersByCustomer(Customer customer, Pageable pageable);
+
+    @Query("SELECT o FROM Order o "+
+            "LEFT JOIN FETCH o.orderFractionsList f " +
+            "LEFT JOIN FETCH f.product p " +
+            "LEFT JOIN FETCH p.productType " +
+            "WHERE o.orderId = :id")
+    Optional<Order> findOrderWithDetails(@Param("id") Long id);
+
+    /**
+     * Admin
+     */
+    @Query("SELECT DISTINCT o FROM Order o " +
+            "LEFT JOIN FETCH o.orderStatus s "+
+            "WHERE s.orderStatusId = :status")
+    Page<Order> findByOrdersStatus(Pageable pageable,
+                                   @Param("status") Long status);
+
+    @Query("SELECT o FROM Order o " +
+            "LEFT JOIN FETCH o.customer c " +
+            "LEFT JOIN FETCH o.orderFractionsList f " +
+            "LEFT JOIN FETCH f.product p " +
+            "WHERE o.orderId = :id")
+    Optional<Order> findByOrderId(@Param("id") Long id);
+
 }

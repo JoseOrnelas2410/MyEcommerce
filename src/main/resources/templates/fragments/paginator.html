@@ -1,13 +1,21 @@
-<th:block th:fragment="paginator(endPoint, currentPage, totalPages, isFirst, isLast, hasPrevious, hasNext)">
+<th:block th:fragment="paginator(
+         url,
+         currentPage,
+         totalPages,
+         isFirst,
+         isLast,
+         hasPrevious,
+         hasNext,
+         category)"><!--Necesario para que si navegamos con filtro no se pierda-->
     <nav aria-label="Page navigation" th:if="${totalPages > 0}">
         <ul class="pagination justify-content-center align-items-center">
 
             <li class="page-item" th:classappend="${isFirst} ? 'disabled'">
-                <a class="page-link" th:href="@{${endPoint}(page=0)}">First</a>
+                <a class="page-link" th:href="@{${url}(page=0)(category=${category})}">First</a>
             </li>
 
             <li class="page-item" th:classappend="${!hasPrevious} ? 'disabled'">
-                <a class="page-link" th:href="@{${endPoint}(page=${currentPage - 1})}">Previous</a>
+                <a class="page-link" th:href="@{${url}(page=${currentPage - 1})(category=${category})}">Previous</a>
             </li>
 
             <li class="page-item disabled">
@@ -15,11 +23,11 @@
             </li>
 
             <li class="page-item" th:classappend="${!hasNext} ? 'disabled'">
-                <a class="page-link" th:href="@{${endPoint}(page=${currentPage + 1})}">Next</a>
+                <a class="page-link" th:href="@{${url}(page=${currentPage + 1})(category=${category})}">Next</a>
             </li>
 
             <li class="page-item" th:classappend="${isLast} ? 'disabled'">
-                <a class="page-link" th:href="@{${endPoint}(page=${totalPages - 1})}">Last</a>
+                <a class="page-link" th:href="@{${url}(page=${totalPages - 1})(category=${category})}">Last</a>
             </li>
         </ul>
     </nav>

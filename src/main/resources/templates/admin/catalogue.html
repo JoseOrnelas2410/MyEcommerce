@@ -8,7 +8,7 @@
         -->
         <div th:if="${#maps.isEmpty(typeList)}">
             <p>Sorry no product type/category found.</p>
-            <div th:replace="~{fragments/buttons :: modal-trigger(addProductTypeModal,'ADD YOUR FIRST CATEGORY', iconUrl)}"></div>
+            <div th:replace="~{fragments/buttons :: modal-trigger(addProductTypeModal,'ADD CATEGORY', 'bi bi-plus-square-fill')}"></div>
         </div>
 
         <div th:unless="${#maps.isEmpty(typeList)}">
@@ -20,7 +20,7 @@
 
                     <div th:if="${page.totalElements == 0}">
                         <p>No hay productos registrados aún.</p>
-                        <div th:replace="~{fragments/buttons :: modal-trigger(addProductModal,'ADD YOUR FIRST PRODUCT', iconUrl)}"></div>
+                        <div th:replace="~{fragments/buttons :: modal-trigger(addProductModal,'ADD PRODUCT', 'bi bi-plus-square-fill')}"></div>
                     </div>
 
                     <!--Pagina en blanco-->
@@ -30,7 +30,7 @@
 
                     <!--Productos registrados-->
                     <div th:if="${page.hasContent()}">
-                        <div th:replace="~{fragments/buttons :: modal-trigger(addProductModal,'ADD A NEW PRODUCT', iconUrl)}"></div>
+                        <div th:replace="~{fragments/buttons :: modal-trigger(addProductModal,'ADD PRODUCT', 'bi bi-plus-square-fill')}"></div>
                         <div class="admin-products-catalogue">
                             <div th:each="product : ${page.content}">
                                 <div class="product-row">
@@ -45,11 +45,10 @@
                                     <p th:text="${product.isActive}">Status</p>
                                     <!--Boton editarProduct-->
                                     <button type="button"
-                                            class="btn btn-outline-primary"
+                                            class="button"
                                             data-bs-toggle="modal"
                                             data-bs-target="#updateProductModal"
-                                            th:data-bs-image="|${storagePath}${product.productImageRoute}${product.extension}|"
-                                            th:data-bs-id="${product.id}"
+                                            th:data-bs-image="@{|/images/products/${product.productImageRoute}${product.extension}|}"                                            th:data-bs-id="${product.id}"
                                             th:data-bs-name="${product.name}"
                                             th:data-bs-price="${product.price}"
                                             th:data-bs-stock="${product.stock}"
@@ -57,7 +56,8 @@
                                             th:data-bs-active="${product.active}"
                                     >
                                         <p>UPDATE PRODUCT</p>
-                                        <p>Icon</p>
+                                        <div class="divider"></div>
+                                        <i class="bi bi-pencil-square"></i>
                                     </button>
                                 </div>
                             </div>
@@ -69,7 +69,8 @@
                             ${page.first},
                             ${page.last},
                             ${page.hasPrevious()},
-                            ${page.hasNext()})}">
+                            ${page.hasNext()},
+                            0)}">
                                 Paginador</div>
                         </div>
                     </div>
@@ -77,7 +78,7 @@
 
                 <!--Contenedor para la tabla de categorias-->
                 <div class="categories-section">
-                    <div th:replace="~{fragments/buttons :: modal-trigger(addProductTypeModal,'ADD A NEW CATEGORY', iconUrl)}"></div>
+                    <div th:replace="~{fragments/buttons :: modal-trigger(addProductTypeModal,'ADD CATEGORY', 'bi bi-plus-square-fill')}"></div>
                     <div th:each="entry : ${typeList.entrySet()}">
                         <p th:text="${entry.key}"></p>
                         <p th:text="${entry.value}"></p>

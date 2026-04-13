@@ -1,13 +1,31 @@
 .header {
+    position: fixed;
+    top: 1rem;
+    left: 0;
+    z-index: 1000;
+    width: 100%;
     display: flex;
-    align-content: center;
+    justify-content: center;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
     justify-content: space-between;
+    width: 80%;
+    height: 4rem;
+    border-radius: 2rem;
+    padding: 2rem 3rem;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 5px 5px 6px rgba(0,0,0,0.1);
 }
 
 .page-body {
     display: flex;
     padding-left: 8rem;
     padding-right: 1rem;
+    padding-top: 6rem;
 }
 
 .nav-bar {
@@ -64,6 +82,37 @@
     text-align: center;
     margin: 0;
     padding: 0;
+}
+
+.field {
+    display: flex;
+    align-items: center;
+    width: 33rem;
+}
+
+.field label{
+    color: grey;
+    font-weight: lighter;
+    font-size: 14px;
+}
+
+
+.customer-page-header {
+    display: flex;
+    width: 70rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.customer-page-header i {
+    font-size: 15rem;
+    padding-left: 1rem;
+}
+
+.customer-header-data{
+    padding-left: 1rem;
+    display: flex;
+    flex-direction: column;
 }
 
 .catalogue-sections-container {
@@ -193,10 +242,9 @@
 }
 
 .quantity-selector-container {
-    position: absolute;
-    right: 1rem;
-    bottom: 1rem;
+    position: relative;
     display: flex;
+    align-items: center;
     width: 7rem;
     height: 2rem;
     border-radius: 4px;
@@ -292,8 +340,39 @@
 
 .button {
     display: flex;
-    width: 115px;
-    height: 38px;
-    align-content: center;
-    justify-content: space-between;
+    align-items: center;
+    justify-content: center;
+    width: 9rem;
+    height: 3rem;
+    border-radius: 1.5rem;
+    border: 0;
+    margin: 0;
+    background: #B600BF;
+    text-decoration: none;
+    padding: 0 0.5rem;
+}
+
+.button p{
+    font-weight: 600;
+    color: white;
+    font-size: .85rem;
+    margin: 0;
+    flex-grow: 0;
+    text-align: center;
+}
+
+.button div{
+    width: 1px;
+    height: 60%;
+    background-color: white; /* Color blanco traslúcido */
+    margin: 0 0.75rem;
+}
+
+.button i {
+    font-size: 1.4rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
 }

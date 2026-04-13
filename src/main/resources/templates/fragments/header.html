@@ -6,9 +6,10 @@
 </head>
 <body>
 <header th:fragment="header" class="header">
-    <h1>Logo</h1>
-    <p>Aqui ira mi SearchBar</p>
-    <a th:href="@{/logout}">Logout</a>  <!-- ← Faltaba th: -->
+    <div class="header-content">
+        <h1>Logo</h1>
+        <div th:replace=" ~{fragments/buttons ::navigation-button('/logout','LOGOUT','bi bi-box-arrow-right')}"></div>
+    </div>
 </header>
 </body>
 </html>
