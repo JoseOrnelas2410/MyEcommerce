@@ -13,6 +13,7 @@ import com.example.myecommerce.models.entity.ProductType;
 import com.example.myecommerce.services.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.sql.SQLOutput;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -167,5 +170,20 @@ public class AdminController {
      */
 
     @GetMapping("/reports")
-    public String adminReports(){ return "admin/reports"; }
+    public String adminReports(
+            Model model,
+            @RequestParam(name = "report_type", defaultValue = "0") int reportType,
+            @RequestParam(name = "from", required = false)@DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
+            @RequestParam(name = "to", required = false)@DateTimeFormat(pattern = "yyyy-MM-dd") Date to
+            ){
+        try {
+            Map<Integer, Object> reportData = orderService.createReport(reportType, from, to);
+            reportData.forEach((position, object)->{
+                System.out.println("RankingPosition: " + position + "\t data: " + object.toString());
+            });
+        } catch (Exception e) {
+            System.out.println("Exception e" + e.getMessage());
+        }
+        return "admin/reports";
+    }
 }

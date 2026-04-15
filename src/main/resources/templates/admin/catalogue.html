@@ -77,7 +77,7 @@
                 </div>
 
                 <!--Contenedor para la tabla de categorias-->
-                <div class="categories-section">
+                <div class="filters-section">
                     <div th:replace="~{fragments/buttons :: modal-trigger(addProductTypeModal,'ADD CATEGORY', 'bi bi-plus-square-fill')}"></div>
                     <div th:each="entry : ${typeList.entrySet()}">
                         <p th:text="${entry.key}"></p>

@@ -87,4 +87,14 @@ public class Order {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         this.total = this.subTotal.multiply(BigDecimal.valueOf((double)iva/100).add(BigDecimal.ONE));
     }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "orderId=" + orderId +
+                ", customer=" + customer.getUsername() +
+                ", totalProducts=" + totalProducts +
+                ", total=" + total +
+                ", dateTime=" + dateTime +"}";
+    }
 }

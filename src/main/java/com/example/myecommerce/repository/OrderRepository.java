@@ -1,6 +1,5 @@
 package com.example.myecommerce.repository;
 
-import com.example.myecommerce.models.dto.RankingProductFraction;
 import com.example.myecommerce.models.entity.Customer;
 import com.example.myecommerce.models.entity.Order;
 import org.springframework.data.domain.Page;
@@ -45,4 +44,20 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
             "WHERE o.orderId = :id")
     Optional<Order> findByOrderId(@Param("id") Long id);
 
+    @Query("SELECT DISTINCT o FROM Order o " +
+            "LEFT JOIN o.orderFractionsList f " +
+            "WHERE o.orderStatus.orderStatusId = 4 " +
+            "AND o.dateTime BETWEEN :from AND :to " +
+            "ORDER BY o.dateTime DESC "
+    )
+    Optional<List<Order>> findCompletedOrders(@Param("from") LocalDateTime from,
+                                              @Param("to") LocalDateTime to);
+
+    @Query("SELECT DISTINCT o FROM Order o " +
+            "LEFT JOIN FETCH o.orderFractionsList f " +
+            "LEFT JOIN FETCH  f.product p " +
+            "WHERE o.orderStatus.orderStatusId = 4L " +
+            "AND o.dateTime BETWEEN :from and :to ")
+    Optional<List<Order>> findOrdersAndProducts(@Param("from") LocalDateTime from,
+                                                @Param("to") LocalDateTime to);
 }

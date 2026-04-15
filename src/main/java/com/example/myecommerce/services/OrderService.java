@@ -1,6 +1,8 @@
 package com.example.myecommerce.services;
 
 import com.example.myecommerce.config.ShoppingCart;
+import com.example.myecommerce.models.dto.RankingCustomerDto;
+import com.example.myecommerce.models.dto.RankingProductDto;
 import com.example.myecommerce.models.entity.*;
 import com.example.myecommerce.repository.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -13,7 +15,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -70,18 +78,14 @@ public class OrderService {
         return true;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public Page<Order> findUserOrders(int page, String email){
         Pageable pageable = PageRequest.of(page, 10, Sort.by("dateTime"));
         return orderRepository.findOrdersByCustomer(userService.findCustomerByEmail(email), pageable);
     }
 
-    /**
-     * Customer & Admin
-     */
-
-    @Transactional
+    @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public Order getOrderByUser(Long id, String email) throws IllegalAccessException {
          Order orderFound = orderRepository.findOrderWithDetails(id).orElseThrow(() -> new EntityNotFoundException("Order Not found"));
@@ -95,17 +99,16 @@ public class OrderService {
      * Admin
      */
 
-    @Transactional
+    @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Page<Order> getOrders(int pageNumber, Long orderStatus) {
         Pageable pageable = PageRequest.of(pageNumber,15,Sort.by("dateTime").descending());
-        if (orderStatus > 0) {
+        if (orderStatus > 0 && orderStatus <= 4) {
             return orderRepository.findByOrdersStatus(pageable, orderStatus);
-        }
-        return orderRepository.findAll(pageable);
+        } else { return orderRepository.findAll(pageable); }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Order getOrderById(Long id){
         return orderRepository.findById(id)
@@ -122,6 +125,75 @@ public class OrderService {
             orderToUpdate.setOrderStatus(orderStatusService.getOrderStatusById(orderStatus));
         } else {
             orderToUpdate.setPaymentStatus(paymentStatusService.getPaymentStatusById(paymentStatus));//Genera cambio de orderStatus
+        }
+    }
+
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public Map<Integer, Object> createReport(int reportType,
+                                             Date from,
+                                             Date to
+    ) {
+        if (from == null || to == null) throw new IllegalArgumentException("No dates Selected");
+        LocalDateTime fromLDT= from.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        LocalDateTime toLDT= to.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        System.out.println(fromLDT);
+        System.out.println(toLDT);
+        List<Order> orders = orderRepository.findCompletedOrders(fromLDT, toLDT)
+                .orElseThrow(()-> new EntityNotFoundException("THERE ISN'T ANY COMPLETED ORDER IN THIS DATE RANGE"));
+        AtomicInteger rank = new AtomicInteger(1);
+        switch (reportType) {
+            case 1:
+                return orders.stream() //Generamos el map y retornamos
+                        .collect(Collectors.toMap(
+                                order->rank.getAndIncrement(),
+                                order-> order,
+                                (oldValue, newValue) -> oldValue,
+                                LinkedHashMap::new
+                        ));
+            case 2:
+                Map<Integer, Object> rankingProductMap = new LinkedHashMap<>();
+                List<OrderFraction> fractionList = orderRepository.findOrdersAndProducts(fromLDT, toLDT)//Traemos lista de orders desde db
+                        .orElseThrow(()-> new EntityNotFoundException("OrdersNotFound"))//En caso de no encontrarse lanzamos exception
+                        .stream().flatMap(order -> order.getOrderFractionsList().stream())//De ser encontradas mapeamos a fractions
+                        .toList(); //Lo convertimos a lista
+                fractionList.stream().collect(Collectors.groupingBy(OrderFraction::getProduct))
+                        .forEach((product, orderFractions) -> {
+                            int totalSold = orderFractions.stream()
+                                    .mapToInt(OrderFraction::getQuantity).sum();
+                            RankingProductDto productRanked = new RankingProductDto(
+                                    product.getId(),
+                                    product.getName(),
+                                    totalSold,
+                                    product.getStock(),
+                                    product.getProductType());
+                            rankingProductMap.put(
+                                    rank.getAndIncrement(),
+                                    productRanked
+                            );
+                        });
+                return rankingProductMap;
+            case 3:
+                Map<Integer,Object> rankingCustomerMap = new LinkedHashMap<>();
+                orders.stream().collect(Collectors.groupingBy(Order::getCustomer))//Ordenamos por customer
+                        .forEach((customer, customerOrders) -> {//Para cada customer y lista de orders
+                            BigDecimal totalSpend = customerOrders.stream()
+                                    .map(Order::getTotal)
+                                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+                            RankingCustomerDto customerRanked = new RankingCustomerDto(
+                                    customer.getUsername(),
+                                    customerOrders.size(),
+                                    totalSpend,
+                                    customerOrders.get(customerOrders.size()-1)
+                                            .getDateTime());
+                            rankingCustomerMap.put(
+                                    rank.getAndIncrement(),
+                                    customerRanked
+                                    );
+                        });
+                return rankingCustomerMap;
+            default:
+                throw new IllegalArgumentException("Invalid Report Type");
         }
     }
 }
