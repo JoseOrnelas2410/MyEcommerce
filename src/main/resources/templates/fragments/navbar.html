@@ -14,13 +14,13 @@
 <th:block th:fragment="navbar">
     <nav class="nav-bar">
         <div class="nav-bar-items-container">
-            <th:block sec:authorize="hasRole('ROLE_CUSTOMER')">
+            <th:block sec:authorize="hasAuthority('ROLE_CUSTOMER')">
                 <div th:replace="~{fragments/navbar :: navbar-button('bi bi-person', 'PROFILE', '/customer/profile')}"></div>
                 <div th:replace="~{fragments/navbar :: navbar-button('bi bi-shop-window','CATALOGUE','/customer/catalogue')}"></div>
                 <div th:replace="~{fragments/navbar :: navbar-button('bi bi-cart4','CART','/customer/shopping_cart')}"></div>
                 <div th:replace="~{fragments/navbar :: navbar-button('bi bi-bag-check','ORDERS','/customer/orders')}"></div>
             </th:block>
-            <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+            <th:block sec:authorize="hasAuthority('ROLE_ADMIN')">
                 <div th:replace="~{fragments/navbar :: navbar-button('bi bi-person', 'PROFILE', '/admin/profile')}"></div>
                 <div th:replace="~{fragments/navbar :: navbar-button('bi bi-shop-window','CATALOGUE','/admin/catalogue')}"></div>
                 <div th:replace="~{fragments/navbar :: navbar-button('bi bi-bag-check','ORDERS','/admin/orders')}"></div>

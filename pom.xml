@@ -89,7 +89,25 @@
             <artifactId>thymeleaf-layout-dialect</artifactId>
             <version>3.3.0</version>
         </dependency>
+
+        <!-- Generar archivos pdf -->
+        <dependency>
+            <groupId>com.github.librepdf</groupId>
+            <artifactId>openpdf</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+
+        <!--Creacion e insercion de graficos-->
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.5.6</version>
+            <scope>compile</scope>
+        </dependency>
+
     </dependencies>
+
+
 
     <build>
         <plugins>

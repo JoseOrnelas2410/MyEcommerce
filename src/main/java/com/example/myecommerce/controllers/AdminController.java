@@ -11,9 +11,11 @@ import com.example.myecommerce.models.entity.Order;
 import com.example.myecommerce.models.entity.Product;
 import com.example.myecommerce.models.entity.ProductType;
 import com.example.myecommerce.services.*;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -41,6 +43,7 @@ public class AdminController {
     private final OrderService orderService;
     private final OrderStatusService orderStatusService;
     private final PaymentStatusService paymentStatusService;
+    private final PdfService pdfService;
 
     /**
      * Profile
@@ -178,12 +181,26 @@ public class AdminController {
             ){
         try {
             Map<Integer, Object> reportData = orderService.createReport(reportType, from, to);
-            reportData.forEach((position, object)->{
-                System.out.println("RankingPosition: " + position + "\t data: " + object.toString());
-            });
+            model.addAttribute("report", reportData);
+            model.addAttribute("actualReport", reportType);
+            model.addAttribute("from_date", from);
+            model.addAttribute("to_date", to);
         } catch (Exception e) {
             System.out.println("Exception e" + e.getMessage());
         }
         return "admin/reports";
+    }
+
+    @GetMapping("/reports/pdf")
+    @ResponseBody
+    public void adminReports(
+            HttpServletResponse response,
+            @RequestParam(name = "report", required = true) int reportType,
+            @RequestParam(name = "from_date") Date from,
+            @RequestParam(name = "to_date") Date to
+    ) throws IOException {
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "inline; filename=report.pdf");
+        pdfService.generate(response.getOutputStream(), reportType,from,to);
     }
 }

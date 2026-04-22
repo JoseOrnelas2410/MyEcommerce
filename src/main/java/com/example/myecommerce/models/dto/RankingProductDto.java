@@ -17,7 +17,7 @@ public class RankingProductDto {
 
     private int actualStock;
 
-    private ProductType category;
+    private String category;
 
     @Override
     public String toString() {

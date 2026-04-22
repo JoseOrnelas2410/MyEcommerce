@@ -1,10 +1,12 @@
 package com.example.myecommerce.services;
 
 import com.example.myecommerce.config.ShoppingCart;
+import com.example.myecommerce.models.dto.DateRangeReportDto;
 import com.example.myecommerce.models.dto.RankingCustomerDto;
 import com.example.myecommerce.models.dto.RankingProductDto;
 import com.example.myecommerce.models.entity.*;
 import com.example.myecommerce.repository.OrderRepository;
+import com.example.myecommerce.util.ReportUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -137,63 +139,52 @@ public class OrderService {
         if (from == null || to == null) throw new IllegalArgumentException("No dates Selected");
         LocalDateTime fromLDT= from.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         LocalDateTime toLDT= to.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        System.out.println(fromLDT);
-        System.out.println(toLDT);
-        List<Order> orders = orderRepository.findCompletedOrders(fromLDT, toLDT)
-                .orElseThrow(()-> new EntityNotFoundException("THERE ISN'T ANY COMPLETED ORDER IN THIS DATE RANGE"));
+        List<Order> orders = orderRepository.findCompletedOrders(fromLDT, toLDT);
+        if (orders.isEmpty()) throw new EntityNotFoundException("No orders completed in this date Range");
         AtomicInteger rank = new AtomicInteger(1);
+        Map<Integer, Object> map = new LinkedHashMap<>();
         switch (reportType) {
             case 1:
-                return orders.stream() //Generamos el map y retornamos
-                        .collect(Collectors.toMap(
-                                order->rank.getAndIncrement(),
-                                order-> order,
-                                (oldValue, newValue) -> oldValue,
-                                LinkedHashMap::new
-                        ));
+                List<DateRangeReportDto> dateRangeReportList = ReportUtil.getDateRangeList(orders);
+                dateRangeReportList.forEach(dto -> {
+                    map.put(
+                            rank.getAndIncrement(),
+                            dto
+                    );
+                });
+                return map;
             case 2:
-                Map<Integer, Object> rankingProductMap = new LinkedHashMap<>();
-                List<OrderFraction> fractionList = orderRepository.findOrdersAndProducts(fromLDT, toLDT)//Traemos lista de orders desde db
-                        .orElseThrow(()-> new EntityNotFoundException("OrdersNotFound"))//En caso de no encontrarse lanzamos exception
-                        .stream().flatMap(order -> order.getOrderFractionsList().stream())//De ser encontradas mapeamos a fractions
-                        .toList(); //Lo convertimos a lista
-                fractionList.stream().collect(Collectors.groupingBy(OrderFraction::getProduct))
-                        .forEach((product, orderFractions) -> {
-                            int totalSold = orderFractions.stream()
-                                    .mapToInt(OrderFraction::getQuantity).sum();
-                            RankingProductDto productRanked = new RankingProductDto(
-                                    product.getId(),
-                                    product.getName(),
-                                    totalSold,
-                                    product.getStock(),
-                                    product.getProductType());
-                            rankingProductMap.put(
-                                    rank.getAndIncrement(),
-                                    productRanked
-                            );
-                        });
-                return rankingProductMap;
+                List<RankingProductDto> rankingProductList = ReportUtil.getRankingProductList(orders);
+                //Llenamos map
+                rankingProductList.forEach(rankedProduct->{
+                    map.put(
+                            rank.getAndIncrement(),
+                            rankedProduct
+                    );
+                });
+                return map;
             case 3:
-                Map<Integer,Object> rankingCustomerMap = new LinkedHashMap<>();
-                orders.stream().collect(Collectors.groupingBy(Order::getCustomer))//Ordenamos por customer
-                        .forEach((customer, customerOrders) -> {//Para cada customer y lista de orders
-                            BigDecimal totalSpend = customerOrders.stream()
-                                    .map(Order::getTotal)
-                                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-                            RankingCustomerDto customerRanked = new RankingCustomerDto(
-                                    customer.getUsername(),
-                                    customerOrders.size(),
-                                    totalSpend,
-                                    customerOrders.get(customerOrders.size()-1)
-                                            .getDateTime());
-                            rankingCustomerMap.put(
-                                    rank.getAndIncrement(),
-                                    customerRanked
-                                    );
-                        });
-                return rankingCustomerMap;
+                //Lista
+                List<RankingCustomerDto> rankedCustomers = ReportUtil.getRankingCustomerList(orders);
+                rankedCustomers.forEach(rankingCustomer->{
+                    map.put(
+                            rank.getAndIncrement(),
+                            rankingCustomer
+                    );
+                });
+                return map;
             default:
                 throw new IllegalArgumentException("Invalid Report Type");
         }
+    }
+
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public List<Order> getOrdersByDateRange(Date from, Date to){
+        LocalDateTime from_date = from.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        LocalDateTime to_date = to.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        List<Order> ordersFound = orderRepository.findCompletedOrders(from_date, to_date);
+        if (ordersFound.isEmpty()) throw new EntityNotFoundException("No ordersFound in this dateRange");
+        return ordersFound;
     }
 }

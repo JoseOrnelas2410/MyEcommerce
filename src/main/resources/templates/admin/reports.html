@@ -2,8 +2,97 @@
          xmlns:th="http://www.thymeleaf.org"
          xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <div layout:fragment="content" class="page-content">
-        <div class="reports-container">
+        <div class="admin-content-outlined">
+            <div th:unless="${#maps.isEmpty(report)}"  class="report-body">
+                <canvas id="chart" class="report-chart">
 
+                </canvas>
+                <!--Reporte por DateTime-->
+                <div th:if="${actualReport == 1}">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover shadow-sm">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Order Id</th>
+                                    <th>Customer</th>
+                                    <th>Total</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="order :${report.entrySet()}">
+                                    <td th:text="${order.key}"></td>
+                                    <td th:text="${order.value.orderId}"></td>
+                                    <td th:text="${order.value.customerName}"></td>
+                                    <td th:text="${order.value.total}"></td>
+                                    <td th:text="${order.value.orderDate}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--Reporte por RankingProduct-->
+                <div th:if="${actualReport == 2}">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover shadow-sm">
+                            <thead class="table-dark">
+                            <tr>
+                                <th>Rank</th>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>Quantity Sold</th>
+                                <th>Actual Stock</th>
+                                <th>Category</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="product : ${report.entrySet()}">
+                                    <td th:text="${product.key}"></td>
+                                    <td th:text="${product.value.productId}"></td>
+                                    <td th:text="${product.value.name}"></td>
+                                    <td th:text="${product.value.quantitySold}"></td>
+                                    <td th:text="${product.value.actualStock}"></td>
+                                    <td th:text="${product.value.category}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--CustomerReport-->
+                <div th:if="${actualReport == 3}">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover shadow-sm">
+                            <thead class="table-dark">
+                            <tr>
+                                <th>Rank</th>
+                                <th>User</th>
+                                <th>Total orders</th>
+                                <th>Total Payed</th>
+                                <th>LastOrderDate</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="customer: ${report.entrySet()}">
+                                <td th:text="${customer.key}"></td>
+                                <td th:text="${customer.value.name}"></td>
+                                <td th:text="${customer.value.totalOrders}"></td>
+                                <td th:text="${customer.value.totalPayed}"></td>
+                                <td th:text="${customer.value.lastOrderDate}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+                <form th:action="@{/admin/reports/pdf}" target="_blank">
+                    <input type="hidden" name="from_date" th:value="${from_date}">
+                    <input type="hidden" name="to_date" th:value="${to_date}">
+                    <input type="hidden" name="report" th:value="${actualReport}">
+                    <div th:replace="~{/fragments/buttons :: action-button('PRINT TO PDF','bi bi-printer')}"></div>
+                </form>
+            </div>
         </div>
         <div class="filters-section">
             <form th:action="@{/admin/reports}"
@@ -18,5 +107,14 @@
                 <div th:replace="~{/fragments/buttons :: action-button('GENERATE','bi bi-file-earmark-bar-graph')}"></div>
             </form>
         </div>
+        <!--Script para poder implementar Chart.js-->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <!--Script para compartir mis variables con mi js-->
+        <script th:inline="javascript">
+            const reportData = [[${report}]];
+            const reportType = [[${actualReport}]]
+        </script>
+        <!--Script necesario para funcion de mi chart-->
+        <script th:src="@{/js/chart.js}"></script>
     </div>
 </section>
