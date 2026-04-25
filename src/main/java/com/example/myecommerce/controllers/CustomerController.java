@@ -120,8 +120,13 @@ public class CustomerController {
     public String customerCreateOrder(
             @AuthenticationPrincipal User user
     ){
-        boolean isOrderCreated = orderService.createOrder(user.getUsername(), this.shoppingCart.getItems());
-        return (isOrderCreated) ? "redirect:/customer/catalogue" : "redirect/customer/shopping_cart";
+        try {
+            orderService.createOrder(user.getUsername(), this.shoppingCart.getItems());
+            return "redirect:/customer/catalogue";
+        } catch (Exception e) {
+            System.out.println("Exception e: " + e.getMessage());
+            return "redirect:/customer/shopping_cart";
+        }
     }
 
     @GetMapping("/update_quantity")

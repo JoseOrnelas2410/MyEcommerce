@@ -5,6 +5,7 @@ import com.example.myecommerce.models.dto.UserUpdateDto;
 import com.example.myecommerce.models.entity.Admin;
 import com.example.myecommerce.models.entity.Customer;
 import com.example.myecommerce.models.entity.User;
+import com.example.myecommerce.repository.PasswordRecoveryRepository;
 import com.example.myecommerce.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -30,14 +31,14 @@ public class UserService {
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     public Customer findCustomerByEmail(String email){
         return (Customer) userRepository.findUserByEmail(email)
-                .orElseThrow(()->new EntityNotFoundException("customerNotFound"));
+                .orElseThrow(()->new EntityNotFoundException("customer Not Found"));
     }
 
     @Transactional
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Admin findAdminByEmail(String email){
         return (Admin) userRepository.findUserByEmail(email)
-                .orElseThrow(()->new EntityNotFoundException("customerNotFound"));
+                .orElseThrow(()->new EntityNotFoundException("customer Not Found"));
     }
 
 
@@ -91,10 +92,21 @@ public class UserService {
     }
 
 
+    public User userExist(String email){
+        return userRepository.findUserByEmail(email)
+                .orElseThrow(()-> new EntityNotFoundException("User " + email + ",  not found"));
+    }
+
+
     private User findUserAndConfirmPassword(String password, String email) throws AccessDeniedException {
         User userFound = userRepository.findUserByEmail(email)
                 .orElseThrow(()-> new EntityNotFoundException("User no found with email" + email));
         if (!(passwordEncoder.matches(password,userFound.getPassword()))) throw new AccessDeniedException("The actual password provided is incorrect.");
         return userFound;
+    }
+
+    public void resetPassword(User user, String newPassword){
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
     }
 }

@@ -42,7 +42,7 @@ public class OrderService {
 
     @Transactional//Asegura que si no se cumple todo elimine los registros(Todo o nada)
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public Boolean createOrder(String userEmail, List<ShoppingKartItem> items){
+    public void createOrder(String userEmail, List<ShoppingKartItem> items){
         Customer customer= userService.findCustomerByEmail(userEmail);
         Order newOrder = new Order(
                 customer,
@@ -77,7 +77,6 @@ public class OrderService {
         newOrder.setOrderFractionsList(fractionList);
         orderRepository.save(newOrder);//agregamos las fracciones
         cart.getItems().clear();//Vaciamos carro para evitar que el nuevo ShoppingKart contenga residuos
-        return true;
     }
 
     @Transactional(readOnly = true)
@@ -127,6 +126,7 @@ public class OrderService {
             orderToUpdate.setOrderStatus(orderStatusService.getOrderStatusById(orderStatus));
         } else {
             orderToUpdate.setPaymentStatus(paymentStatusService.getPaymentStatusById(paymentStatus));//Genera cambio de orderStatus
+            if (paymentStatus == 3L) orderToUpdate.setOrderStatus(orderStatusService.getOrderStatusById(2L));//Actualizar orderStatus si estado de pago es3
         }
     }
 

@@ -89,7 +89,7 @@ public class PdfService {
                          "Order Id",
                          "Total Value",
                          chartData,
-                         PlotOrientation.HORIZONTAL,
+                         PlotOrientation.VERTICAL,
                          false,
                          false,
                          false);
@@ -131,7 +131,7 @@ public class PdfService {
                          "Customers",
                          "Number of Orders",
                          chartData,
-                         PlotOrientation.HORIZONTAL,
+                         PlotOrientation.VERTICAL,
                          false,
                          false,
                          false);
@@ -215,6 +215,8 @@ public class PdfService {
         return content;
     }
 
+
+    /*Generar codigo para actualizar sesion http y que jale la info de db*/
 
 
 }

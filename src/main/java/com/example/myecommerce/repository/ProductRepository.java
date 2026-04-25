@@ -37,7 +37,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     "LEFT JOIN FETCH p.productType")
     Page<Product> findAllProductsWithDetails(Pageable pageable);
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Lock(LockModeType.PESSIMISTIC_WRITE)//Comprobar
     @Query("SELECT p FROM Product p WHERE p.id = :id ")
     Optional<Product> findByIdWithLock(@Param("id")Long id);
 }

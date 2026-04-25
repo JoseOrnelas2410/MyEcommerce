@@ -105,6 +105,12 @@
             <scope>compile</scope>
         </dependency>
 
+        <!--Mail y smpt para password recovery-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
     </dependencies>
 
 
