@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -8,7 +9,12 @@
 <header th:fragment="header" class="header">
     <div class="header-content">
         <h1>Logo</h1>
-        <div th:replace=" ~{fragments/buttons ::navigation-button('/logout','LOGOUT','bi bi-box-arrow-right')}"></div>
+        <div class="buttons-paired">
+            <div th:replace=" ~{fragments/buttons ::navigation-button('/logout','LOGOUT','bi bi-box-arrow-right')}"></div>
+            <th:block sec:authorize="hasAuthority('ROLE_CUSTOMER')">
+                <div th:replace="~{fragments/buttons :: navigation-button('/customer/shopping_cart','SHOPPING KART','bi bi-cart4')}"></div>
+            </th:block>
+        </div>
     </div>
 </header>
 </body>

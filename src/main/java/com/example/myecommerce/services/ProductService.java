@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -109,6 +110,16 @@ public class ProductService {
                             fraction.getQuantity()
                     );
                 }).collect(Collectors.toList());
+    }
+
+    @Transactional
+    @PreAuthorize("isAuthenticated()")
+    public BigDecimal getCartTotal (List<ShoppingKartItem> items){
+        BigDecimal total = items.stream().map(item->{
+            Product productFound = findProductById(item.getProductId());
+            return productFound.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
+        }).reduce(BigDecimal.ZERO,BigDecimal::add);
+        return total.multiply(BigDecimal.valueOf(1.16));
     }
 
     @PreAuthorize("isAuthenticated()")

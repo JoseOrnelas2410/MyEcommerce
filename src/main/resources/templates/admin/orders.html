@@ -25,16 +25,19 @@
             </div>
             <div class="filters-section">
                 <form th:action="@{/admin/orders}" method="get">
-                    <select name="order_status">
+                    <select name="order_status" class="input">
                         <option selected disabled>Select a category</option>
                         <option th:each="status: ${status_list.entrySet()}"
                                 th:value="${status.key}"
                                 th:text="${status.value}">
                         </option>
                     </select>
-                    <div th:replace="~{fragments/buttons :: action-button('FILTER','bi bi-funnel')}"></div>
+                    <div class="buttons-paired">
+                        <div th:replace="~{fragments/buttons :: action-button('FILTER','bi bi-funnel')}"></div>
+                        <div th:replace="~{/fragments/buttons :: navigation-button('/admin/orders','RESET FILTER','bi bi-arrow-clockwise')}"></div>
+                    </div>
                 </form>
-                <div th:replace="~{/fragments/buttons :: navigation-button('/admin/orders','RESET FILTER','bi bi-arrow-clockwise')}"></div>
+
             </div>
         </div>
     </div>

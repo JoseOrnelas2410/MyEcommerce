@@ -97,13 +97,14 @@
         <div class="filters-section">
             <form th:action="@{/admin/reports}"
                   method="get">
-                <select name="report_type">
+                <select name="report_type"
+                        class="input">
                     <option th:value="1" selected>DATE_RANGE</option>
                     <option th:value="2">TOP RANKING PRODUCT</option>
                     <option th:value="3">CUSTOMER</option>
                 </select>
-                <input type="date" required name="from">
-                <input type="date" required name="to">
+                <input type="date" required name="from" class="input">
+                <input type="date" required name="to" class="input">
                 <div th:replace="~{/fragments/buttons :: action-button('GENERATE','bi bi-file-earmark-bar-graph')}"></div>
             </form>
         </div>

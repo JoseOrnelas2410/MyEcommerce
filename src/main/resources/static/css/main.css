@@ -1,0 +1,343 @@
+* p{
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 5px 5px 6px rgba(0,0,0,0.1);
+    height: 5rem;
+}
+
+.header-content {
+    width: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem ;
+}
+
+.page-body {
+    padding-top: 6rem;
+    display: flex;
+}
+
+.nav-bar {
+    position: fixed;
+    z-index: 900;
+    height: auto;
+    width: 6rem;
+    left: 1rem;
+    top: 6rem;
+    background: lightgray;
+    border: 2px solid black;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-bar-items-container{
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 5rem;
+    width: 5rem;
+    border: 2px solid black;
+    border-radius: 4px;
+    color: black;
+    text-decoration: none;
+    position: relative;
+}
+
+.nav-item i{
+    position: absolute;
+    top: .5rem;
+    font-size: 2rem ;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item span{
+    position: absolute;
+    bottom: .5rem;
+    font-size: .75rem;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+.filters-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    right: 1rem;
+    top: 6rem;
+    width: 25rem;
+    height: auto;
+    background: lightgray;
+    border: 2px solid black;
+    border-radius: 8px ;
+}
+
+.filters-content {
+    padding: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.filters-section form{
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.page-body {
+    display: flex;
+    flex-direction: column;
+    padding-top: 6rem;
+    max-width: 100%;
+    max-height: 100%;
+    align-items: center;
+    justify-items: center;
+}
+
+.input{
+    height: 2rem;
+    width: auto;
+    border: none;
+    outline: none;
+    background: white;
+    display: flex;
+    border-radius: 1rem;
+    padding: 0 .5rem;
+}
+
+.field {
+    display: flex;
+    width: 35rem;
+}
+
+.field label {
+    width: 15rem;
+    font-size: 1rem;
+    font-weight: lighter;
+}
+
+.field span {
+    width: 20rem;
+    font-size: 1rem;
+    font-weight: normal;
+}
+
+.field-input {
+    width: 10rem;
+}
+
+.outlined-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    height: 1.25rem;
+    padding-right: .25rem;
+    padding-left: .25rem;
+    border: 2px solid grey;
+    color: grey;
+    font-size: .75rem;
+    border-radius: .5rem;
+    margin-bottom: 1rem;
+}
+
+.price-container{
+    display: flex;
+    flex-direction: column;
+}
+
+.price-tag{
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1rem;
+    color: grey;
+    margin: 0;
+}
+
+.customer-page-header {
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    width: 40rem;
+    height: 14rem;
+    gap: 2rem;
+}
+
+.customer-page-header i{
+    font-size: 12rem;
+}
+
+/* Alineación vertical de los textos */
+.customer-header-data {
+    height: 14rem;
+    width: 26rem;
+    position: relative;
+}
+
+.customer-header-data h1 {
+    margin: 0;
+    width: 56rem;
+    position: absolute;
+    top: 1rem;
+}
+
+.customer-header-data h2 {
+    margin: 0;
+    color: gray;
+    font-weight: lighter;
+    position: absolute;
+    top: 5rem;
+}
+
+
+.ammount {
+    font-size: 1.25rem;
+    color: #B600BF;
+    margin: 0;
+    line-height: 1.25rem;
+}
+
+.quantity-selector {
+    display: flex;
+    align-items: center;
+    height: 2rem;
+    width: 7rem;
+    box-shadow: 0 10px 15px 6px rgba(0,0,0,0.1);
+}
+
+.quantity-selector button {
+    height: 2rem;
+    width: 2rem;
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    font-size: 1.5rem;
+    background: #B600BF;
+    color: white;
+    font-weight: bold;
+    border: none;
+    outline: none;
+}
+
+.add-to-cart:enabled{
+    background: #B600BF;
+    color: white;
+    cursor: pointer;
+}
+
+.quantity-selector button:disabled,
+.add-to-cart:disabled{
+    background: #D480D9;
+    cursor: not-allowed;
+}
+
+.quantity-selector input{
+    width: 3rem;
+    height: 2rem;
+    background: white;
+    border: none;
+    outline: none;
+    box-sizing: border-box;
+    text-align: center;
+    margin: 0;
+}
+
+.quantity-selector p{
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Cambiado de justify-items a justify-content */
+    text-align: center;
+    width: 3rem;
+    height: 2rem;
+    background: white;
+    margin: 0;
+}
+
+
+.buttons-paired {
+    display: flex;
+    gap: 2rem;
+}
+
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 9rem;
+    height: 3rem;
+    border-radius: 1.5rem;
+    border: 0;
+    margin: 0;
+    background: #B600BF;
+    text-decoration: none;
+    padding: 0 0.5rem;
+}
+
+.button p{
+    font-weight: 600;
+    color: white;
+    font-size: .85rem;
+    margin: 0;
+    flex-grow: 0;
+    text-align: center;
+}
+
+.button div{
+    width: 1px;
+    height: 60%;
+    background-color: white; /* Color blanco traslúcido */
+    margin: 0 0.75rem;
+}
+
+.button i {
+    font-size: 1.4rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+}
+
+.customer-page{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 1rem;
+}

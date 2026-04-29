@@ -1,6 +1,7 @@
 <section layout:decorate="~{layouts/main-layout}"
          xmlns:th="http://www.thymeleaf.org"
          xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
     <div layout:fragment="content">
         <!--Para if/unless sobre colecciones funcionen bien los metodos usar
                                 Maps    #maps.
@@ -84,10 +85,12 @@
 
                 <!--Contenedor para la tabla de categorias-->
                 <div class="filters-section">
-                    <div th:replace="~{fragments/buttons :: modal-trigger(addProductTypeModal,'ADD CATEGORY', 'bi bi-plus-square-fill')}"></div>
-                    <div th:each="entry : ${typeList.entrySet()}">
-                        <p th:text="${entry.key}"></p>
-                        <p th:text="${entry.value}"></p>
+                    <div class="filters-content">
+                        <div th:replace="~{fragments/buttons :: modal-trigger(addProductTypeModal,'ADD CATEGORY', 'bi bi-plus-square-fill')}"></div>
+                        <div th:each="entry : ${typeList.entrySet()}" class="admin-category">
+                            <p th:text="${entry.key}"></p>
+                            <p th:text="${entry.value}"></p>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -37,7 +37,7 @@ public class SecurityConfig {
                  * Establecemos procesos que necesitan authenticated y que no necesitan
                  */
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/static/css/**","/images/**","/public/**").permitAll()
+                                .requestMatchers("/css/**","/images/**","/public/**").permitAll()
                                 .requestMatchers("/login","/register","/password_recovery","/start_password_recovery","/reset_password", "/recover_password").permitAll()
                                 .anyRequest().authenticated()
                         )

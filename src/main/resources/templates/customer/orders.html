@@ -2,15 +2,16 @@
          xmlns:th="http://www.thymeleaf.org"
          xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <div layout:fragment="content">
-        <div class="customer-page-header">
-            <i class="bi bi-person-bounding-box"></i>
-            <div class="customer-header-data">
-                <h1 th:text="${name}"></h1>
-                <h2 th:text="${email}"></h2>
+        <div class="customer-page">
+            <div class="customer-page-header">
+                <i class="bi bi-person-bounding-box"></i>
+                <div class="customer-header-data">
+                    <h1 th:text="${name}"></h1>
+                    <h2 th:text="${email}"></h2>
+                </div>
             </div>
         </div>
         <div class="customer-orders-content">
-
             <div th:if="${page.totalElements == 0}">
                 <p>You have not created an order yet.</p>
             </div>

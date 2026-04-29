@@ -8,11 +8,14 @@ import com.example.myecommerce.models.entity.User;
 import com.example.myecommerce.repository.PasswordRecoveryRepository;
 import com.example.myecommerce.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,6 +82,7 @@ public class UserService {
         }
         user.setPhone(userUpdateValues.getPhone());
         user.setUserAddress(userUpdateValues.getAddress());
+        refreshHttpsSession(user);
         return false;
     }
 
@@ -88,7 +92,17 @@ public class UserService {
      */
     @PreAuthorize("isAuthenticated()")
     private void refreshHttpsSession(User user){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();//Obtenemos la authenticacion
 
+        if (authentication== null) throw new IllegalArgumentException("Action not allowed");//Si no esta autenticado lanzamos exception
+
+        UsernamePasswordAuthenticationToken refreshAuth = new UsernamePasswordAuthenticationToken( //Generamos un nuevo token de authenticacion con las credenciales y authorities
+                user,
+                authentication.getCredentials(),
+                user.getAuthorities()
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(refreshAuth);//Al contexto almacenado en securityContext holder le enviamos la nueva session
     }
 
 

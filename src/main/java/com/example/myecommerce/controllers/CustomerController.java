@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -107,10 +108,12 @@ public class CustomerController {
             Model model
     ) {
         List<CartFractionDto> cartWithDetails = productService.getCartWithDetails(this.shoppingCart.getItems());
+        BigDecimal cartTotal = productService.getCartTotal(this.shoppingCart.getItems());
         cartWithDetails.forEach(item->{
             System.out.println(item.toString());
         });
         model.addAttribute("cart", cartWithDetails);
+        model.addAttribute("total", cartTotal);
         model.addAttribute("name", (user.getName()+" "+user.getFirstName()));
         model.addAttribute("email", user.getEmail());
         return "/customer/shopping-kart";

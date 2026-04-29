@@ -3,7 +3,7 @@
          xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <div layout:fragment="content" class="page-content">
         <script th:src="@{/js/catalogue-quantity.js}"></script>
-        <div class="customer-products-container">
+        <div class="customer-catalogue">
             <div th:if="${page.totalElements == 0}">
                 <p>Sorry we dont have any product registered yec, please come back later</p>
             </div>
@@ -13,7 +13,7 @@
             </div>
 
             <div th:if="${page.hasContent()}">
-                <div class="customer-catalogue-section">
+                <div class="customer-catalogue-products">
                     <div th:each="product : ${page.content}" class="product-card">
                         <img th:src="@{|/images/products/${product.productImageRoute}${product.extension}|}"
                              class="product-card-img"
@@ -32,29 +32,31 @@
                             <input type="hidden" name="category" th:value="${categoryid}">
                             <input type="hidden" name="id" th:value="${product.id}">
                             <div class="quantity-selector-container">
-                                <button type="button"
-                                        class="quantity-selector-minus"
-                                        onclick="changeQuantity(this, -1)"
-                                        disabled>
-                                    -
-                                </button>
+                                <div class="quantity-selector">
+                                    <button type="button"
+                                            class="quantity-selector-minus"
+                                            onclick="changeQuantity(this, -1)"
+                                            disabled>
+                                        -
+                                    </button>
 
-                                <input type="number"
-                                       name="quantity"
-                                       value="0"
-                                       readonly
-                                       step="1"
-                                       class="qty-input"
-                                       th:data-stock="${product.stock}"
-                                >
+                                    <input type="number"
+                                           name="quantity"
+                                           value="0"
+                                           readonly
+                                           step="1"
+                                           class="qty-input"
+                                           th:data-stock="${product.stock}"
+                                    >
 
-                                <button type="button"
-                                        class="quantity-selector-plus"
-                                        onclick="changeQuantity(this, 1)">
-                                    +
-                                </button>
+                                    <button type="button"
+                                            class="quantity-selector-plus"
+                                            onclick="changeQuantity(this, 1)">
+                                        +
+                                    </button>
+                                </div>
                             </div>
-                            <button class="button-add-to-cart" type="submit" disabled>
+                            <button class="add-to-cart" type="submit" disabled>
                                 <i class="bi bi-cart-plus"></i>
                             </button>
                         </form>
@@ -75,16 +77,20 @@
             <!--Contenedor filtros-->
         <div class="filters-section">
             <form th:action="@{/customer/catalogue}" method="get">
-                <select name="category" required>
+                <select name="category" required
+                class="input">
                     <option selected disabled>Select a category...</option>
                     <option th:each="category: ${categories.entrySet()}"
                             th:value="${category.key}"
                             th:text="${category.value}">
                     </option>
                 </select>
-                <div th:replace="~{/fragments/buttons :: action-button('FILTER','bi bi-funnel')}"></div>
+                <div class="buttons-paired">
+                    <div th:replace="~{/fragments/buttons :: navigation-button('/customer/catalogue','RESET FILTER','bi bi-arrow-clockwise')}"></div>
+                    <div th:replace="~{/fragments/buttons :: action-button('FILTER','bi bi-funnel')}"></div>
+                </div>
             </form>
-            <div th:replace="~{/fragments/buttons :: navigation-button('/customer/catalogue','RESET FILTER','bi bi-arrow-clockwise')}"></div>
+
         </div>
     </div>
 </section>
