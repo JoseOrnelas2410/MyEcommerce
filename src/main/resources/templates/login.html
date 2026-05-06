@@ -7,11 +7,7 @@
     <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
 <body>
-
-<div th:if="${param.success}" style="color: green; margin-bottom: 10px;">
-    ¡Registro completado! Por favor, inicia sesión.
-</div>
-
+<div th:replace="~{fragments/redirect-message :: redirect-message}"></div>
 <form th:action="@{/login}" method="post">
     <div>
         <input type="email" name="username" placeholder="E-mail" required>

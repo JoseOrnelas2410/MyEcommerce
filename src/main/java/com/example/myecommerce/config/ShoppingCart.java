@@ -49,18 +49,6 @@ public class ShoppingCart implements Serializable {
                 });
     }
 
-    public void decreaseQuantity(Long id) {
-        items.stream().filter(item->item.getProductId().equals(id))
-                .findFirst()
-                .ifPresent( item -> {
-                    if (item.getQuantity()<=1) {
-                        removeItem(id);
-                    } else {
-                        item.setQuantity(item.getQuantity()-1);
-                    }
-                });
-    }
-
     public void removeItem(Long id){
         items.removeIf(item->item.getProductId().equals(id));//Recorremos y donde el id sea identico eliminamos producto
     }

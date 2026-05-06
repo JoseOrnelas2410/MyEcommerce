@@ -1,33 +1,12 @@
-.customer-catalogue {
-    display: flex;
-    flex-direction: column;
-    max-width: 80rem;
-    /* Sumamos: 1rem (margen) + 6rem (width nav) + 1rem (espacio extra) = 8rem */
-    margin-left: 8rem;
-    /* Sumamos: 1rem (margen) + 25rem (width filtros) + 1rem (espacio extra) = 27rem */
-    margin-right: 27rem;
-    margin-bottom: 1rem;
-}
-
-.customer-catalogue-products {
-    max-width: 80rem;
-    min-width: 24rem;
-    padding-bottom: 2rem;
-    display: grid;
-    /* La magia ocurre aquí */
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
-    margin: 0 auto;
-    gap: 1rem;
-}
-
 .product-card {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
     width: 20rem;
-    height: 24rem;
+    height: 25rem;
     border-radius: 1rem;
+    gap: .5rem;
     box-shadow: 0 10px 15px 6px rgba(0,0,0,0.1);
     position: relative;
 }
@@ -41,24 +20,9 @@
 }
 
 .product-card-data {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    padding-left: 1rem;
-    justify-content: left;
-}
-
-.product-card-name {
-    font-size: 1.5rem;
-    font-weight: 600;
-}
-
-.product-card form{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    height: 100%;
+    width: 18rem;
+    height: 8rem;
+    position: relative;
 }
 
 .quantity-selector-container {
@@ -68,8 +32,6 @@
 }
 
 .add-to-cart{
-    background: blueviolet;
-    color: white;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -82,4 +44,164 @@
     position: absolute;
     top: 11rem;
     right: 2rem;
+    color: white;
+}
+
+.spacer-1 {
+    height: 1rem;
+}
+
+.add-to-cart:enabled{
+    background: #B600BF;
+    cursor: pointer;
+}
+
+.quantity-selector button:disabled,
+.add-to-cart:disabled{
+    background: #D480D9;
+    cursor: not-allowed;
+}
+
+.customer-catalogue-grid {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    width: auto;
+    max-width: max-content;
+    margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+    .customer-catalogue-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 768px) {
+    .customer-catalogue-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .filtered-content {
+        margin-left: 8rem;
+        margin-right: 28rem;
+        width: auto;
+    }
+}
+
+@media (min-width: 1200px) {
+    .customer-catalogue-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+
+.admin-filtered-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    margin-right: 28rem;
+    width: auto;
+    padding: 6rem 2rem 2rem;
+    overflow: hidden;
+    background: lightgray;
+    border: 2px solid black;
+    border-radius: 8px ;
+    gap: 1rem;
+}
+
+.table-responsive {
+    width: 100%;
+}
+
+.admin-top-right-content {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+}
+
+.admin-top-left-content {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+}
+
+.admin-top-left-content p{
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.admin-catalogue-img{
+    height: 3rem;
+    width: 3rem;
+    object-fit: cover;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.select-with-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.select-with-label label{
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.select-paired {
+    display: flex;
+    width: 30rem;
+    justify-content: space-around;
+
+}
+
+.form-img-container {
+    width: 12rem;
+    height: 12rem;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #D480D9;
+    border-radius: 1rem;
+}
+
+.img-preview{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.img-preview[src=""] {
+    display: none;
+}
+
+.image-input {
+    display: none;
+}
+
+.custom-file-button{
+    width: 4rem;
+    height: 4rem;
+    border-radius: .5rem;
+    position: absolute;
+    bottom: .5rem;
+    right: .5rem;
+    background: #B600BF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: white;
+    cursor: pointer;
 }

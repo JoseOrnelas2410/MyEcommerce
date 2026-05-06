@@ -85,16 +85,10 @@ public class CustomerController {
             @RequestParam(name = "id", defaultValue = "0") Long id,
             @RequestParam(name = "quantity", defaultValue = "0") int quantity,
             RedirectAttributes redirectAttributes){
-        System.out.println("Data get: page: " + page +
-                "categoryID: " + category +
-                "productID: " + id +
-                "quantity: " + quantity);
-        //Agregamos a mi shoppingkart y
         this.shoppingCart.addItem(id, quantity);
-        System.out.println(shoppingCart.toString());
-        //Al agregar a shoppingKart manda a mi redirect un valor para que no pierda su page y filter
         redirectAttributes.addAttribute("page", page);
         redirectAttributes.addAttribute("category",category);
+        redirectAttributes.addFlashAttribute("success","Item added to your shopping cart.");
         return "redirect:/customer/catalogue";
     }
 
@@ -109,9 +103,6 @@ public class CustomerController {
     ) {
         List<CartFractionDto> cartWithDetails = productService.getCartWithDetails(this.shoppingCart.getItems());
         BigDecimal cartTotal = productService.getCartTotal(this.shoppingCart.getItems());
-        cartWithDetails.forEach(item->{
-            System.out.println(item.toString());
-        });
         model.addAttribute("cart", cartWithDetails);
         model.addAttribute("total", cartTotal);
         model.addAttribute("name", (user.getName()+" "+user.getFirstName()));
@@ -121,15 +112,12 @@ public class CustomerController {
 
     @PostMapping("/create_order")
     public String customerCreateOrder(
-            @AuthenticationPrincipal User user
+            @AuthenticationPrincipal User user,
+            RedirectAttributes redirectAttributes
     ){
-        try {
-            orderService.createOrder(user.getUsername(), this.shoppingCart.getItems());
-            return "redirect:/customer/catalogue";
-        } catch (Exception e) {
-            System.out.println("Exception e: " + e.getMessage());
-            return "redirect:/customer/shopping_cart";
-        }
+        orderService.createOrder(user.getUsername(), this.shoppingCart.getItems());
+        redirectAttributes.addFlashAttribute("success","Order Created");
+        return "redirect:/customer/shopping_cart";
     }
 
     @GetMapping("/update_quantity")
@@ -138,13 +126,7 @@ public class CustomerController {
             @RequestParam(name = "action") String action
     ) {
         int maxStock= productService.findProductById(id).getStock();
-
-        try {
-            this.shoppingCart.updateQuantity(id,action,maxStock);
-        } catch (Exception e) {
-            System.out.println("Exception "+ e.getMessage());
-        }
-
+        this.shoppingCart.updateQuantity(id,action,maxStock);
         return "redirect:/customer/shopping_cart";
     }
 
@@ -178,16 +160,11 @@ public class CustomerController {
             @RequestParam(name="id") Long id,
             @AuthenticationPrincipal User user,
             Model model
-    ) {
-        try {
-            Order orderFound = orderService.getOrderByUser(id, user.getUsername());
-            model.addAttribute("order", orderFound);
-            model.addAttribute("name", user.getName()+" "+user.getFirstName());
-            model.addAttribute("email", user.getEmail());
-            return "/customer/order-details";
-        } catch (Exception e) {
-            System.out.println("Exception: "+e.getMessage());
-            return "redirect:/customer/orders";
-        }
+    ) throws IllegalAccessException {
+        Order orderFound = orderService.getOrderByUser(id, user.getUsername());
+        model.addAttribute("order", orderFound);
+        model.addAttribute("name", user.getName()+" "+user.getFirstName());
+        model.addAttribute("email", user.getEmail());
+        return "/customer/order-details";
     }
 }

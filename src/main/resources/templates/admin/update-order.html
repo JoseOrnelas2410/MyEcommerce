@@ -2,30 +2,62 @@
          xmlns:th="http://www.thymeleaf.org"
          xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <div layout:fragment="content">
-        <div class="update-order">
-            <h1 th:text="${order.orderId}"></h1>
-            <p th:text="${order.customer.username}"></p>
-            <p th:text="${order.orderAddress}"></p>
-            <p>Date_Time</p>
-            <p th:text="${order.dateTime}"></p>
-            <p>Order Details</p>
-            <div th:each="fraction :${order.orderFractionsList}">
-                <img th:src="@{|/images/products/${fraction.product.productImageRoute}${fraction.product.extension}|}">
-                <p th:text="${fraction.product.id}"></p>
-                <p th:text="${fraction.quantity}"></p>
-                <p th:text="${fraction.unitPrice}"></p>
-                <p th:text="${fraction.subtotal}"></p>
+        <div class="customer-page">
+            <div class="admin-update-order">
+                <div class="top-left-data">
+                    <h1 th:text="'Order Id:'+${order.orderId}" class="main-id"></h1>
+                    <p th:text="${order.customer.username}"></p>
+                </div>
+                <p th:text="${order.orderAddress}" class="bottom-left-data" style="font-weight: lighter"></p>
+                <div class="top-right-data">
+                    <p class="gray-tag">Date_Time</p>
+                    <p th:text="${order.dateTime}"></p>
+                </div>
+                <div class="bottom-right-data">
+                    <p class="gray-tag">TOTAL+IVA</p>
+                    <p th:text="${order.total}" class="ammount"></p>
+                </div>
             </div>
-            <p>Total</p>
-            <p th:text="${order.subTotal}"></p>
-            <p>Total + IVA</p>
-            <p th:text="${order.total}"></p>
+            <div class="horizontal-separator">
+                <div class="horizontal-line"></div>
+                <p>ORDER DETAILS</p>
+                <div class="horizontal-line"></div>
+            </div>
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Product Id</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Sub Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="fraction :${order.orderFractionsList}">
+                        <td>
+                            <img th:src="@{|/images/products/${fraction.product.productImageRoute}${fraction.product.extension}|}"
+                                 class="admin-catalogue-img">
+                        </td>
+                        <td th:text="${fraction.product.id}"></td>
+                        <td th:text="${fraction.quantity}"></td>
+                        <td th:text="${fraction.unitPrice}"></td>
+                        <td th:text="${fraction.subtotal}"></td>
+                    </tr>
+                </tbody>
+            </table>
             <!--Si aun no se ha autorizado el pago PaymentStatud!=-->
-            <div th:if="${order.paymentStatus.paymentStatusId != 3}">
-                <p th:text="${order.orderStatus.orderStatusDescription}">
-                <form th:action="@{/admin/update_order_status}" method="post">
+            <div th:if="${order.paymentStatus.paymentStatusId != 3}"
+                 class="update-order-form-container">
+                <p th:text="${order.orderStatus.orderStatusDescription}"
+                   class="outlined-container">
+                <form th:action="@{/admin/update_order_status}"
+                      method="post"
+                      class="update-order-form">
                     <input type="hidden" name="id" th:value="${order.orderId}" required>
-                    <select name="pay_status">
+                    <p style="font-weight: lighter">Payment Status</p>
+                    <select name="pay_status"
+                            class="form-select">
                         <option th:text="${order.paymentStatus.paymentStatusDescription}"
                                 selected
                                 disabled></option>
@@ -40,11 +72,17 @@
                         'bi bi-floppy')}"></div>
                 </form>
             </div>
-            <div th:unless="${order.paymentStatus.paymentStatusId !=3}">
-                <p th:text="${order.paymentStatus.paymentStatusDescription}"></p>
-                <form th:action="@{/admin/update_order_status}" method="post">
+            <div th:unless="${order.paymentStatus.paymentStatusId !=3}"
+                class="update-order-form-container">
+                <p th:text="${order.paymentStatus.paymentStatusDescription}"
+                   class="outlined-container"></p>
+                <form th:action="@{/admin/update_order_status}"
+                      method="post"
+                      class="update-order-form">
                     <input type="hidden"  name="id" th:value="${order.orderId}" required>
-                    <select name="ord_status">
+                    <p style="font-weight: lighter">Order Status</p>
+                    <select name="ord_status"
+                            class="form-select">
                         <option th:text="${order.orderStatus.orderStatusDescription}"
                                 selected
                                 disabled></option>

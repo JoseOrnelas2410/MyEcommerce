@@ -22,25 +22,28 @@
 }
 
 .customer-data h2 {
+    margin-top: .5rem;
     font-weight: lighter;
 }
 
 .horizontal-separator {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: max-content;
-    height: auto;
-    font-size: 1.5rem;
-    line-height: 1.5rem;
+    width: 40rem;
     gap: 1rem;
 }
 
 .horizontal-line {
     background: black;
     height: 2px;
-    width: 15rem;
-    display: inline-block;
+    flex-grow: 1;
+}
+
+.horizontal-separator p{
+    white-space: nowrap;
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1rem;
 }
 
 .profile-data {

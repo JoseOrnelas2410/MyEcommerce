@@ -11,11 +11,14 @@
     <link rel="stylesheet" th:href="@{/css/profile.css}">
     <link rel="stylesheet" th:href="@{/css/catalogue.css}">
     <link rel="stylesheet" th:href="@{/css/cart.css}">
-
+    <link rel="stylesheet" th:href="@{/css/orders.css}">
+    <link rel="stylesheet" th:href="@{/css/modal.css}">
+    <link rel="stylesheet" th:href="@{/css/reports.css}">
 </head>
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
 <div class="page-body">
+    <div th:replace="~{fragments/redirect-message :: redirect-message}"></div>
     <div th:replace="~{fragments/navbar :: navbar}"></div>
     <main layout:fragment="content">
     </main>

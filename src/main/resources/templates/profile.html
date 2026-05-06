@@ -29,7 +29,8 @@
             </div>
         </div>
         <!--Modales-->
-        <div th:replace="~{modals/update-password :: modal-update-password(${passwordUpdateDto})}"></div>
+        <div th:replace="~{modals/update-password :: modal-update-password(${passwordUpdateDto}, ${userData.name} +''+${userData.firstName},${userData.email})}"></div>
         <div th:replace="~{modals/update-user :: modal-update-profile(${userUpdateDto})}"></div>
+        <script th:src="@{/js/inputs-match.js}"></script>
     </div>
 </section>

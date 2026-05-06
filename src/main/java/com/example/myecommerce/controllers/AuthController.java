@@ -53,14 +53,10 @@ public class AuthController {
             //Buscar @Valid para implementar verificacion de campos
             @ModelAttribute("passwordUpdateDto")PasswordUpdateDto passwordUpdateDto,
             @AuthenticationPrincipal User user,
-            RedirectAttributes redirectAttributes){
-        try {
-            userService.updatePassword(passwordUpdateDto, user.getUsername());
-            redirectAttributes.addFlashAttribute("success","password updated succesfully.");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error",e.getCause());
-        }
-        return (user instanceof Admin) ? "redirect:/admin/profile":"redirect:/customer/profile";//Aqui que me recomiendas devolver para llamar al controller indicado?
+            RedirectAttributes redirectAttributes) throws AccessDeniedException {
+        userService.updatePassword(passwordUpdateDto, user.getUsername());
+        redirectAttributes.addFlashAttribute("success","Password Updated");
+        return (user instanceof Admin) ? "redirect:/admin/profile" : "redirect:/customer/profile";
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -69,19 +65,12 @@ public class AuthController {
             //Buscar @Valid para implementar verificacion de campos
             @ModelAttribute("userUpdateDto")UserUpdateDto userUpdateDto,
             @AuthenticationPrincipal User user,
-            RedirectAttributes redirectAttributes) {
-        boolean emailChanges = false;
-        try{
-            emailChanges = userService.updateUser(userUpdateDto, user.getUsername());
-            redirectAttributes.addFlashAttribute("succes","profile updated succesfully");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", e.getCause());
-        }
-        if (emailChanges) {
-            return "redirect:/logout"; //Si se cambia el email es necesario desloguear a user para no mostrar error y solicitar nuevo login.
-        } else {
-            return (user instanceof Admin) ? "redirect:/admin/profile":"redirect:/customer/profile";//De no haber cambio en email dirijimos a la pagina ROLE/profile
-        }
+            RedirectAttributes redirectAttributes) throws AccessDeniedException {
+        User userUpdated = userService.updateUser(userUpdateDto, user.getUsername());
+        System.out.println("Profile updated agregando redirect attributes");
+        redirectAttributes.addFlashAttribute("success","Profile Updated");
+        if (userUpdated instanceof Admin) return "redirect:/admin/profile";//Si se cambia el email es necesario desloguear a user para no mostrar error y solicitar nuevo login.
+        else return "redirect:/customer/profile";
     }
 
     @GetMapping("/password_recovery")

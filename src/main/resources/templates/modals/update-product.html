@@ -1,84 +1,106 @@
-<div th:fragment="modal-update-product(productTypeList)"
+<div th:fragment="modal-update-product(categories)"
      class="modal fade"
      id="updateProductModal"
      tabindex="-1">
     <!--Aqui importamos mi css especifico para este modal-->
-    <link rel="stylesheet" th:href="@{/css/update-product-modal.css}">
-
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header-update-product"  >
-                <img
-                        id="imagePreview"
-                        src=""
-                        alt="imageProduct"
-                        class="update-product-img"
-                >
-
-                <h5 class="modal-update-product-title" id="id"></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <div class="modal-body-update-product">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 <form
                         th:action="@{/admin/update_product}"
-                        th:object="${addProductDto}"
+                        th:object="${updateProductDto}"
                         enctype="multipart/form-data"
                         method="post"
                 >
-                    <input type="text" name="id" id="updateProductID" hidden>
-                    <div>
-
-                        <label>ProductImage
-                            <p id="updateProductImage"></p>
-                            <input type="file" name="image">
-                        </label>
+                    <div class="image-data-container">
+                        <div class="form-img-container">
+                            <img src=""
+                                 alt="No Image Existing"
+                                 id="img-preview"
+                                 class="img-preview"
+                            >
+                            <label for="image-input"
+                                   class="custom-file-button">
+                                <i class="bi bi-upload"></i>
+                            </label>
+                            <input type="file"
+                                   id="image-input"
+                                   class="image-input"
+                                   accept="image/*"
+                                   name="image"
+                            >
+                        </div>
+                        <div class="data-container">
+                            <div class="top-left-data">
+                                <p id="id" class="main-id"></p>
+                            </div>
+                        </div>
                     </div>
 
-                    <div>
-                        <label>Name
-                            <input type="text" name="name" id="updateProductName" required>
-                        </label>
+                    <input type="text"
+                           name="id"
+                           id="product-id"
+                           hidden>
+
+                    <div class="input-with-label">
+                        <label>Name</label>
+                        <input type="text"
+                               name="name"
+                               id="product-name"
+                               required>
                     </div>
 
-                    <div>
-                        <label>Price
-                            <input type="number" step=".01" name="price" id="updateProductPrice" required>
-                        </label>
+                    <div class="input-with-label">
+                        <label>Price</label>
+                        <input type="number"
+                               step=".01"
+                               name="price"
+                               id="product-price"
+                               required>
                     </div>
 
-                    <div>
-                        <label>Stock
-                            <input type="number" step="1" name="stock" id="updateProductStock" required>
-                        </label>
+                    <div class="input-with-label">
+                        <label>Stock</label>
+                        <input type="number"
+                               step="1"
+                               name="stock"
+                               id="product-stock"
+                               required>
                     </div>
 
-                    <div>
-                        <label>ProductType
-                            <select name="productTypeId" id="updateProductTypeId" class="form-select" required>
-                                <option value="${product.productType.productTypeDescription}" selected></option>
-                                <option th:each="entry : ${typeList.entrySet()}"
-                                        th:value="${entry.key}"
-                                        th:text="${entry.value}"></option>
-                            </select>
-                        </label>
-                    </div>
+                    <div class="select-paired">
+                        <div class="select-with-label">
+                            <label>CATEGORY
+                                <select name="productTypeId"
+                                        id="product-category"
+                                        class="form-select"
+                                        required>
+                                    <option value="${product.productType.id}"
+                                            selected
+                                            disabled>
+                                        Categories...
+                                    </option>
+                                    <option th:each="entry : ${categories.entrySet()}"
+                                            th:value="${entry.key}"
+                                            th:text="${entry.value}"></option>
+                                </select>
+                            </label>
+                        </div>
 
-                    <div>
-                        <label>Is active?
-                            <select name="active" id="updateProductIsActive" class="form-select" required>
-                                <option value="true" selected>Active/Show</option>
-                                <option value="false">Not Active/Hidden</option>
-                            </select>
-                        </label>
+                        <div class="select-with-label">
+                            <label>ACTIVE
+                                <select name="active"
+                                        id="product-active"
+                                        class="form-select"
+                                        required>
+                                    <option value="true" selected>Active/Show</option>
+                                    <option value="false">Not Active/Hidden</option>
+                                </select>
+                            </label>
+                        </div>
                     </div>
-
-                    <div class="modal-footer">
-                        <div th:replace="~{/fragments/buttons :: action-button('SAVE CHANGES','bi bi-floppy')}"></div>
-                    </div>
+                    <div th:replace="~{/fragments/buttons :: action-button('SAVE CHANGES','bi bi-floppy')}"></div>
                 </form>
             </div>
-        </div>
-        <script th:src="@{/js/image-update.js}"></script>
     </div>
 </div>

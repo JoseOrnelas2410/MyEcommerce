@@ -1,0 +1,28 @@
+<div th:fragment="modal-update-category"
+     class="modal fade"
+     id="updateCategoryModal"
+     tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <form th:action="@{/admin/update_category}"
+                  method="post">
+                <p id="id" class="main-id"></p>
+                <input type="text"
+                       name="id"
+                       id="category-value"
+                       hidden>
+
+                <div class="input-with-label">
+                    <label>Description</label>
+                    <input type="text"
+                           name="description"
+                           id="category-description"
+                           required
+                    >
+                </div>
+                <div th:replace="~{/fragments/buttons ::action-button('SAVE CHANGES','bi bi-floppy')}"></div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -175,7 +175,6 @@
     color: grey;
     font-size: .75rem;
     border-radius: .5rem;
-    margin-bottom: 1rem;
 }
 
 .price-container{
@@ -183,7 +182,7 @@
     flex-direction: column;
 }
 
-.price-tag{
+.gray-tag{
     font-weight: 600;
     font-size: 1rem;
     line-height: 1rem;
@@ -220,10 +219,11 @@
 
 .customer-header-data h2 {
     margin: 0;
+    font-size: 2rem;
     color: gray;
     font-weight: lighter;
     position: absolute;
-    top: 5rem;
+    top: 3rem;
 }
 
 
@@ -256,18 +256,6 @@
     outline: none;
 }
 
-.add-to-cart:enabled{
-    background: #B600BF;
-    color: white;
-    cursor: pointer;
-}
-
-.quantity-selector button:disabled,
-.add-to-cart:disabled{
-    background: #D480D9;
-    cursor: not-allowed;
-}
-
 .quantity-selector input{
     width: 3rem;
     height: 2rem;
@@ -294,6 +282,11 @@
 .buttons-paired {
     display: flex;
     gap: 2rem;
+}
+
+.button:disabled {
+    background: #D480D9;
+    cursor: not-allowed;
 }
 
 .button {
@@ -336,8 +329,39 @@
 }
 
 .customer-page{
+    min-width: 24rem;
     display: flex;
     flex-direction: column;
     height: 100%;
     gap: 1rem;
+}
+
+.filtered-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.input-with-label{
+    display: flex;
+    align-items: center;
+}
+
+.input-with-label label{
+    font-weight: lighter;
+    color: gray;
+    width: 15rem;
+}
+
+.input-with-label input{
+    font-weight: lighter;
+    color: gray;
+    width: 20rem;
+    height: 1.5rem;
+    border-radius: .75rem;
+    padding-left: 1rem;
+    border: 1px solid gray;
 }

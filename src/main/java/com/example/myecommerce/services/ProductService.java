@@ -10,8 +10,6 @@ import com.example.myecommerce.repository.ProductRepository;
 import com.example.myecommerce.util.FileUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.sql.Update;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -42,8 +40,8 @@ public class ProductService {
 
     @Transactional
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public Product saveProduct(AddProductDto addProductDto) throws IOException {
-        if (addProductDto.getImage()==null) throw new IllegalArgumentException("Error, File can´t be null");
+    public void saveProduct(AddProductDto addProductDto) throws IOException {
+        if (addProductDto.getImage().isEmpty()) throw new IllegalArgumentException("Error, File can´t be empty");
         String fileType = FileUtil.imageType(Objects.requireNonNull(addProductDto.getImage().getContentType()));
         /*Posteamos producto a su ves que convertimo el dto en un producto mediante
         constructor
@@ -60,7 +58,6 @@ public class ProductService {
         String imageName= product.getProductImageRoute()+fileType;
         storageService.saveImage(addProductDto.getImage(), imageName, StorageType.PRODUCT);
         product.setExtension(fileType);
-        return null;
     }
 
     //Creacion de una order

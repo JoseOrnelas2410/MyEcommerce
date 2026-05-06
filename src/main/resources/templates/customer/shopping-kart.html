@@ -9,8 +9,8 @@
                     <h1 th:text="${name}"></h1>
                     <h2 th:text="${email}"></h2>
                     <div th:unless="${#lists.isEmpty(cart)}">
-                        <div class="price-container">
-                            <p class="price-tag">Total+IVA</p>
+                        <div class="bottom-left-data">
+                            <p class="gray-tag">Total+IVA</p>
                             <p th:text="'$' + ${total}" class="ammount">$0.00</p>
                         </div>
                         <form th:action="@{/customer/create_order}"
@@ -31,20 +31,20 @@
                     <div class="horizontal-line"></div>
                 </div>
                 <div th:each="product : ${cart}"
-                     class="cart-item">
+                     class="image-data-container">
                     <img th:src="@{|/images/products/${product.getImageName()}|}"
                          alt="ProductImage">
-                    <div class="cart-item-data">
-                        <p th:text="${product.getProductName()}" class="cart-item-name"></p>
-                        <div class="cart-item-outlined-text">
-                            <p th:text="${product.getCategory()}" class="outlined-container"></p>
+                    <div class="data-container">
+                        <div class="top-left-data">
+                            <p th:text="${product.productName}" class="main-id"></p>
+                            <p th:text="${product.category}" class="outlined-container"></p>
                         </div>
-                        <div class="price-container">
-                            <p class="price-tag">Price</p>
-                            <p th:text="${product.getPrice()}" class="ammount"></p>
+                        <div class="bottom-left-data">
+                            <p class="gray-tag">Price</p>
+                            <p th:text="${product.price}" class="ammount"></p>
                         </div>
                         <form th:action="@{/customer/update_quantity}"
-                              class="cart-item-quantity-selector">
+                              class="top-right-data">
                             <input type="hidden" name="id" th:value="${product.getProductId()}">
                             <div class="quantity-selector">
                                 <button type="submit"
@@ -65,7 +65,7 @@
                                 </button>
                             </div>
                         </form>
-                        <div class="cart-item-button">
+                        <div class="bottom-right-data">
                             <div th:replace="~{/fragments/buttons ::navigation-button('/customer/remove_fsc?id=' + ${product.productId},'REMOVE PRODUCT','bi bi-trash')}"></div>
                         </div>
                     </div>

@@ -1,9 +1,9 @@
 <section layout:decorate="~{layouts/main-layout}"
          xmlns:th="http://www.thymeleaf.org"
          xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-    <div layout:fragment="content" class="page-content">
+    <div layout:fragment="content">
         <script th:src="@{/js/catalogue-quantity.js}"></script>
-        <div class="customer-catalogue">
+        <div class="filtered-content">
             <div th:if="${page.totalElements == 0}">
                 <p>Sorry we dont have any product registered yec, please come back later</p>
             </div>
@@ -13,21 +13,22 @@
             </div>
 
             <div th:if="${page.hasContent()}">
-                <div class="customer-catalogue-products">
+                <div class="customer-catalogue-grid">
                     <div th:each="product : ${page.content}" class="product-card">
                         <img th:src="@{|/images/products/${product.productImageRoute}${product.extension}|}"
                              class="product-card-img"
                              alt="ProductImage">
                         <div class="product-card-data">
-                            <p th:text="${product.name}" class="product-card-name"></p>
-                            <div class="outlined-container">
-                                <p th:text="${product.productType.productTypeDescription}"></p>
+                            <div class="top-left-data">
+                                <p th:text="${product.name}" class="main-id"></p>
+                                <p th:text="${product.productType.productTypeDescription}" class="outlined-container"></p>
+                                <div class="spacer-1"></div>
+                                <p class="gray-tag">Price</p>
+                                <p th:text="'$' + ${product.price} + 'MXN'" class="ammount"></p>
                             </div>
-                            <p class="price-tag">Price</p>
-                            <p th:text="'$' + ${product.price} + 'MXN'" class="ammount"></p>
                         </div>
                         <form th:action="@{/customer/add_to_shopping_cart}"
-                                  method="post">
+                              method="post">
                             <input type="hidden" name="page" th:value="${page.number}">
                             <input type="hidden" name="category" th:value="${categoryid}">
                             <input type="hidden" name="id" th:value="${product.id}">

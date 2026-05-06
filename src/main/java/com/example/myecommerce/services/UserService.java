@@ -66,24 +66,17 @@ public class UserService {
 
     @PreAuthorize("isAuthenticated()")
     @Transactional
-    public boolean updateUser(
+    public User updateUser(
             UserUpdateDto userUpdateValues,
             String email) throws AccessDeniedException {
         User user = findUserAndConfirmPassword(userUpdateValues.getPassword(),email);
         user.setName(userUpdateValues.getName());
         user.setFirstName(userUpdateValues.getFirstName());
-        /*
-        Verificamos si existe cambio de email, de haberlo puede generar conflicto en
-        con la sesion abierta y arrojar error.
-         */
-        if (!user.getEmail().equals(userUpdateValues.getEmail())) {
-            user.setEmail(userUpdateValues.getEmail());
-            return true;
-        }
+        user.setEmail(userUpdateValues.getEmail());
         user.setPhone(userUpdateValues.getPhone());
         user.setUserAddress(userUpdateValues.getAddress());
-        refreshHttpsSession(user);
-        return false;
+        if (!refreshHttpsSession(user)) throw new IllegalArgumentException();
+        return user;
     }
 
     /**
@@ -91,18 +84,18 @@ public class UserService {
      * @param user
      */
     @PreAuthorize("isAuthenticated()")
-    private void refreshHttpsSession(User user){
+    private boolean refreshHttpsSession(User user){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();//Obtenemos la authenticacion
 
-        if (authentication== null) throw new IllegalArgumentException("Action not allowed");//Si no esta autenticado lanzamos exception
+        if (authentication == null) throw new IllegalArgumentException("Action not allowed");//Si no esta autenticado lanzamos exception
 
         UsernamePasswordAuthenticationToken refreshAuth = new UsernamePasswordAuthenticationToken( //Generamos un nuevo token de authenticacion con las credenciales y authorities
                 user,
                 authentication.getCredentials(),
                 user.getAuthorities()
         );
-
-        SecurityContextHolder.getContext().setAuthentication(refreshAuth);//Al contexto almacenado en securityContext holder le enviamos la nueva session
+        SecurityContextHolder.getContext().setAuthentication(refreshAuth);
+        return true;//Al contexto almacenado en securityContext holder le enviamos la nueva session
     }
 
 

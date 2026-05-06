@@ -34,6 +34,13 @@ public class ProductTypeService {
         return productTypeRepository.save(new ProductType(description));
     }
 
+    @Transactional
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public void updateCategory(Long id, String description){
+        ProductType categoryToUpdate = getProductTypeById(id);
+        categoryToUpdate.setProductTypeDescription(description);
+    }
+
     public ProductType getProductTypeById(Long id){
         return productTypeRepository.findById(id)
                 .orElseThrow(()->new EntityNotFoundException("Category not Found"));

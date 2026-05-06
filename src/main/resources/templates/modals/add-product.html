@@ -1,62 +1,86 @@
-<div th:fragment="modal-add-product(addProductDto, productTypeList)"
+<div th:fragment="modal-add-product(categories)"
      class="modal fade"
      id="addProductModal"
      tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Add a new product</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!--Enctype necesario para que mi form procese multipartFile-->
-                <form
-                        th:action="@{/admin/add_product}"
-                        th:object="${addProductDto}"
-                        enctype="multipart/form-data"
-                        method="post">
-                    <div>
-                        <label>Product image</label>
-                        <input type="file" th:field="*{image}" required>
-                    </div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <!--Enctype necesario para que mi form procese multipartFile-->
+            <form
+                    th:action="@{/admin/add_product}"
+                    th:object="${addProductDto}"
+                    enctype="multipart/form-data"
+                    method="post">
 
-                    <div>
-                        <label>Product Name</label>
-                        <input type="text" th:field="*{name}" required>
-                    </div>
+                <div class="form-img-container">
+                    <img src=""
+                         alt="No Image Selected"
+                         id="img-preview-add"
+                         class="img-preview">
 
-                    <div>
-                        <label>Price</label>
-                        <input type="number" step="0.01" th:field="*{price}" required>
-                    </div>
+                    <label for="image-input-add"
+                           class="custom-file-button">
+                        <i class="bi bi-upload"></i>
+                    </label>
+                    <input type="file"
+                           id="image-input-add"
+                           class="image-input"
+                           accept="image/*"
+                           name="image"
+                           >
+                </div>
 
-                    <div>
-                        <label>Stock</label>
-                        <input type="number" step="1" th:field="*{stock}" required>
-                    </div>
+                <div class="input-with-label">
+                    <label>Product Name</label>
+                    <input type="text"
+                           name="name"
+                           required>
+                </div>
 
-                    <div>
-                        <label>Product Type</label>
-                        <select th:field="*{productTypeId}" class="form-select" required>
-                            <option value="" selected disabled>Category...</option>
-                            <option th:each="entry : ${typeList.entrySet()}"
+                <div class="input-with-label">
+                    <label>Price</label>
+                    <input type="number"
+                           step="0.01"
+                           name="price"
+                           required>
+                </div>
+
+                <div class="input-with-label">
+                    <label>Stock</label>
+                    <input type="number"
+                           step="1"
+                           name="stock"
+                           required>
+                </div>
+
+                <div class="select-paired">
+                    <div class="select-with-label">
+                        <label>CATEGORY</label>
+                        <select name="productTypeId"
+                                class="form-select"
+                                required>
+                            <option value="" selected
+                                    disabled>
+                                Category...
+                            </option>
+                            <option th:each="entry : ${categories.entrySet()}"
                                     th:value="${entry.key}"
                                     th:text="${entry.value}"></option>
                         </select>
                     </div>
 
-                    <div>
-                        <label>Is active?</label>
-                        <select th:field="*{active}" class="form-select" required>
+                    <div class="select-with-label">
+                        <label>ACTIVE</label>
+                        <select name="active"
+                                class="form-select"
+                                required>
                             <option value="true" selected>Active / Show</option>
                             <option value="false">Not Active / Hidden</option>
                         </select>
                     </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Save changes</button>
-                    </div>
-                </form>
-            </div>
+                </div>
+                <div th:replace="~{/fragments/buttons ::action-button('ADD PRODUCT','bi bi-plus-square-fill')}"></div>
+            </form>
         </div>
     </div>
 </div>

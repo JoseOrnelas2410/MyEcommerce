@@ -2,43 +2,76 @@
          xmlns:th="http://www.thymeleaf.org"
          xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <div layout:fragment="content">
-        <div class="admin-page-filter">
-            <div class="content-container">
-                <div th:if="${page.totalElements == 0}">
-                    <h1>No orders made, try again later</h1>
+        <div class="admin-filtered-content">
+            <div th:if="${page.totalElements == 0}">
+                <h1>No orders made, try again later</h1>
+            </div>
+            <div th:if="${page.isEmpty() && page.totalElements!=0}">
+                <h1>The page you've requested is empty try with another one.</h1>
+            </div>
+            <div th:if="${page.hasContent()}">
+                <div class="admin-top-left-content">
+                    <p>ORDERS</p>
                 </div>
-                <div th:if="${page.isEmpty() && page.totalElements!=0}">
-                    <h1>The page you've requested is empty try with another one.</h1>
-                </div>
-                <div th:if="${page.hasContent()}">
-                    <div class="admin-table">
-                        <div th:each="order:${page.content}">
-                            <p th:text="${order.orderId}"></p>
-                            <p th:text="${order.customer.email}"></p>
-                            <div th:replace="~{/fragments/buttons :: navigation-button(
+
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th>Order Id</th>
+                                <th>Order Status</th>
+                                <th>Payment Status</th>
+                                <th>Customer</th>
+                                <th>Total</th>
+                                <th>Order DateTime</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="order:${page.content}">
+                                <td th:text="${order.orderId}"></td>
+                                <td th:text="${order.orderStatus.orderStatusDescription}"></td>
+                                <td th:text="${order.paymentStatus.paymentStatusDescription}"></td>
+                                <td th:text="${order.customer.email}"></td>
+                                <td th:text="${order.total}"></td>
+                                <td th:text="${order.dateTime}"></td>
+                                <td>
+                                    <div th:replace="~{/fragments/buttons :: navigation-button(
                                     '/admin/update_order?id='+${order.orderId},
                                     'UPDATE ORDER',
                                     'bi bi-pencil-square')}"></div>
-                        </div>
-                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <div class="filters-section">
-                <form th:action="@{/admin/orders}" method="get">
-                    <select name="order_status" class="input">
-                        <option selected disabled>Select a category</option>
-                        <option th:each="status: ${status_list.entrySet()}"
-                                th:value="${status.key}"
-                                th:text="${status.value}">
-                        </option>
-                    </select>
-                    <div class="buttons-paired">
-                        <div th:replace="~{fragments/buttons :: action-button('FILTER','bi bi-funnel')}"></div>
-                        <div th:replace="~{/fragments/buttons :: navigation-button('/admin/orders','RESET FILTER','bi bi-arrow-clockwise')}"></div>
-                    </div>
-                </form>
-
+            <div th:replace="~{fragments/paginator ::paginator(
+            '/admin/orders',
+            ${page.number},
+            ${page.totalPages},
+            ${page.isFirst()},
+            ${page.isLast()},
+            ${page.hasPrevious()},
+            ${page.hasNext()},
+            ${actual_category})}">
             </div>
+        </div>
+        <div class="filters-section">
+            <form th:action="@{/admin/orders}" method="get">
+                <select name="order_status"
+                        class="form-select">
+                    <option selected disabled>Select a category</option>
+                    <option th:each="status: ${status_list.entrySet()}"
+                            th:value="${status.key}"
+                            th:text="${status.value}">
+                    </option>
+                </select>
+                <div class="buttons-paired">
+                    <div th:replace="~{fragments/buttons :: action-button('FILTER','bi bi-funnel')}"></div>
+                    <div th:replace="~{/fragments/buttons :: navigation-button('/admin/orders','RESET FILTER','bi bi-arrow-clockwise')}"></div>
+                </div>
+            </form>
         </div>
     </div>
 </section>

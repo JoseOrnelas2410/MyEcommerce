@@ -3,21 +3,52 @@
          xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <div layout:fragment="content">
         <link rel="stylesheet" th:href="@{/css/order-details.css}">
-        <div class="customer-page-header">
-            <i class="bi bi-person-bounding-box"></i>
-            <div class="customer-header-data">
-                <h1 th:text="${name}"></h1>
-                <h2 th:text="${email}"></h2>
+        <div class="customer-page">
+            <div class="customer-page-header">
+                <i class="bi bi-person-bounding-box"></i>
+                <div class="customer-header-data">
+                    <h1 th:text="${name}"></h1>
+                    <h2 th:text="${email}"></h2>
+                    <div class="bottom-left-data">
+                        <p class="gray-tag">TOTAL+IVA</p>
+                        <p th:text="'$'+${order.total}+'MXN'" class="ammount"></p>
+                    </div>
+                    <div class="bottom-right-data">
+                        <p th:text="${order.orderStatus.orderStatusDescription}" class="outlined-container"></p>
+                        <p th:text="${order.totalProducts}+' items'" class="order-items"></p>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <p th:text="${order.orderStatus.orderStatusDescription}"></p>
-        <p th:text="${order.totalProducts}"></p>
-        <p th:text="${order.total}"></p>
-        <div th:each="fraction : ${order.orderFractionsList}"
-             class="fraction">
-            <img th:src="@{|/images/products/${fraction.product.productImageRoute}${fraction.product.extension}|}">
-            <p th:text="${fraction.product.name}"></p>
+            <div class="horizontal-separator">
+                <div class="horizontal-line"></div>
+                <p>DETAILS</p>
+                <div class="horizontal-line"></div>
+            </div>
+
+            <div th:each="fraction : ${order.orderFractionsList}"
+                 class="image-data-container">
+                <img th:src="@{|/images/products/${fraction.product.productImageRoute}${fraction.product.extension}|}" alt="ProductImage">
+                <div class="data-container">
+                    <div class="top-left-data">
+                        <p th:text="${fraction.product.name}" class="main-id"></p>
+                        <p th:text="${fraction.product.productType.productTypeDescription}" class="outlined-container"></p>
+                    </div>
+                    <div class="bottom-left-data">
+                        <p class="gray-tag">UNIT PRICE</p>
+                        <p th:text="${fraction.unitPrice}" class="ammount"></p>
+                    </div>
+                    <div class="top-right-data">
+                        <p class="gray-tag">QUANTITY</p>
+                        <p th:text="${fraction.quantity}" class="order-items"></p>
+                    </div>
+                    <div class="bottom-right-data">
+                        <p class="gray-tag">SUBTOTAL</p>
+                        <p th:text="${fraction.subtotal}" class="ammount"></p>
+                    </div>
+                </div>
+                <div class="divider-line"></div>
+            </div>
         </div>
     </div>
 </section>

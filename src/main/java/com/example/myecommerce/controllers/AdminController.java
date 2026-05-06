@@ -39,7 +39,6 @@ public class AdminController {
     private final UserService userService;
     private final ProductService productService;
     private final ProductTypeService productTypeService;
-    private final StorageService storageService;
     private final OrderService orderService;
     private final OrderStatusService orderStatusService;
     private final PaymentStatusService paymentStatusService;
@@ -75,20 +74,32 @@ public class AdminController {
             @RequestParam(name = "page", defaultValue = "0") int page,
             Model model
     ){
-        AddProductDto addProductDto = new AddProductDto();
-        Map<Long,String> productTypeList= productTypeService.getAllProductTypes();
+        UpdateProductDto updateProductDto = new UpdateProductDto();
         Page<Product> productPage = productService.getAllProductsByPage(page);
+        Map<Long,String> categories= productTypeService.getAllProductTypes();
         model.addAttribute("page", productPage);
-        model.addAttribute("addProductDto", addProductDto);
-        model.addAttribute("typeList", productTypeList);
+        model.addAttribute("categories", categories);
         return "admin/catalogue";
     }
 
     @PostMapping("/add_product_type")
     public String addProductType(
-            @ModelAttribute("typeDescription")String description
+            @ModelAttribute("typeDescription")String description,
+            RedirectAttributes redirectAttributes
     ){
         productTypeService.addProductType(description);
+        redirectAttributes.addFlashAttribute("success","New Category Registered: " + description);
+        return "redirect:/admin/catalogue";
+    }
+
+    @PostMapping("/update_category")
+    public String updateCategory(
+        @ModelAttribute("id") Long id,
+        @ModelAttribute("description") String name,
+        RedirectAttributes redirectAttributes
+    ) {
+        productTypeService.updateCategory(id, name);
+        redirectAttributes.addFlashAttribute("success","Category With Id : " + id + " Updated.");
         return "redirect:/admin/catalogue";
     }
 
@@ -96,31 +107,20 @@ public class AdminController {
     public String addProduct(
             @ModelAttribute("addProductDto")AddProductDto addProductDto,
             RedirectAttributes redirectAttributes
-    ) {
-        System.out.println("Producto obtenido"+addProductDto.toString());
-        try {
-            System.out.println("Guardando product");
-            productService.saveProduct(addProductDto);
-            System.out.print("Succes" + "Product saved");
-        } catch (IOException e) {
-            System.out.print("Error "+" Failed saving product"+ e.getMessage());
-        }
+    ) throws Exception {
+        System.out.println("Guardando product");
+        productService.saveProduct(addProductDto);
+        redirectAttributes.addFlashAttribute("success", "New Product Registered: " + addProductDto.getName());
         return "redirect:/admin/catalogue";
-
     }
 
     @PostMapping("/update_product")
     public String updateProduct(
-            @ModelAttribute("updateProductData") UpdateProductDto updateProductDto
-    ){
-        System.out.println("Update data recived in:" + updateProductDto.toString());
-        try {
-            System.out.println("AdminController intentando hacer update de product");
-            productService.updateProduct(updateProductDto);
-        } catch (IOException e) {
-            System.out.println("Error"+ e.getMessage());
-            throw new RuntimeException("Error updating product" + e.getMessage());
-        }
+            @ModelAttribute("updateProductData") UpdateProductDto updateProductDto,
+            RedirectAttributes redirectAttributes
+    ) throws Exception {
+        productService.updateProduct(updateProductDto);
+        redirectAttributes.addFlashAttribute("success","Product with id: " + updateProductDto.getId() + " updated.");
         return "redirect:/admin/catalogue";
     }
     /**
@@ -158,13 +158,11 @@ public class AdminController {
     public String updateOrderStatus(
             @RequestParam(name="id") Long id,
             @RequestParam(name="pay_status", defaultValue = "0") Long payment_status,
-            @RequestParam(name ="ord_status", defaultValue = "0") Long order_status
+            @RequestParam(name ="ord_status", defaultValue = "0") Long order_status,
+            RedirectAttributes redirectAttributes
     ){
-        try {
-            orderService.updateOrder(id, payment_status, order_status);
-        } catch (Exception e) {
-            System.out.println("Exception" + e.getMessage());
-        }
+        orderService.updateOrder(id, payment_status, order_status);
+        redirectAttributes.addFlashAttribute("success","Order with Id: " + id + " Updated.");
         return "redirect:/admin/orders";
     }
 
@@ -178,16 +176,13 @@ public class AdminController {
             @RequestParam(name = "report_type", defaultValue = "0") int reportType,
             @RequestParam(name = "from", required = false)@DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
             @RequestParam(name = "to", required = false)@DateTimeFormat(pattern = "yyyy-MM-dd") Date to
-            ){
-        try {
-            Map<Integer, Object> reportData = orderService.createReport(reportType, from, to);
-            model.addAttribute("report", reportData);
-            model.addAttribute("actualReport", reportType);
-            model.addAttribute("from_date", from);
-            model.addAttribute("to_date", to);
-        } catch (Exception e) {
-            System.out.println("Exception e" + e.getMessage());
-        }
+            ) {
+        Map<Integer, Object> reportData = Map.of();
+        if (reportType != 0) reportData = orderService.createReport(reportType, from, to);
+        model.addAttribute("report", reportData);
+        model.addAttribute("actualReport", reportType);
+        model.addAttribute("from_date", from);
+        model.addAttribute("to_date", to);
         return "admin/reports";
     }
 

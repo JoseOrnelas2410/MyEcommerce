@@ -4,41 +4,40 @@
      tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Update Profile</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+            <div class="modal-content-img">
+                <i class="bi bi-person-bounding-box"></i>
             </div>
-            <div class="modal-body">
-                <form th:action="@{/update_profile}" th:object="${userUpdateDto}" method="post">
-                    <div>
-                        <label>Name</label>
-                        <input type="text" th:field="*{name}" required>
-                    </div>
-                    <div>
-                        <label>FirstName</label>
-                        <input type="text" th:field="*{firstName}" required>
-                    </div>
-                    <div>
-                        <label>E-mail</label>
-                        <input type="email" th:field="*{email}" required>
-                    </div>
-                    <div>
-                        <label>Phone</label>
-                        <input type="tel" th:field="*{phone}" required>
-                    </div>
-                    <div>
-                        <label>Address</label>
-                        <input type="text" th:field="*{address}" required>
-                    </div>
-                    <div>
-                        <label>Confirm with password</label>
-                        <input type="password" th:field="*{password}" required>
-                    </div>
-                    <div class="modal-footer">
-                        <div th:replace="~{/fragments/buttons :: action-button('SAVE CHANGES','bi bi-floppy')}"></div>
-                    </div>
-                    <p>Warning! If you change the email you will need to re authenticate with the new email you provided.</p>
-                </form>
+            <form th:action="@{/update_profile}" th:object="${userUpdateDto}" method="post">
+                <div class="input-with-label">
+                    <label>Name</label>
+                    <input type="text" th:field="*{name}" required>
+                </div>
+                <div class="input-with-label">
+                    <label>FirstName</label>
+                    <input type="text" th:field="*{firstName}" required>
+                </div>
+                <div class="input-with-label">
+                    <label>E-mail</label>
+                    <input type="email" th:field="*{email}" required>
+                </div>
+                <div class="input-with-label">
+                    <label>Phone</label>
+                    <input type="tel" th:field="*{phone}" required>
+                </div>
+                <div class="input-with-label">
+                    <label>Address</label>
+                    <input type="text" th:field="*{address}" required>
+                </div>
+                <div class="input-with-label">
+                    <label>Confirm with password</label>
+                    <input type="password" th:field="*{password}" required>
+                </div>
+                <div th:replace="~{/fragments/buttons :: action-button('SAVE CHANGES','bi bi-floppy')}"></div>
+            </form>
+            <div>
+                <p>Warning! If you change the email you will need to re authenticate with the new email you provided.</p>
             </div>
         </div>
     </div>

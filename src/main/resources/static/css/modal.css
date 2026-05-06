@@ -1,0 +1,34 @@
+.modal-dialog {
+    width: 44rem !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+}
+
+.modal-content {
+    width: 44rem;
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    padding: 2rem;
+    gap: 1rem;
+}
+
+.modal-content-img{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+    width: 40rem;
+    font-size: 12rem;
+}
+
+.modal-content form{
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    width:40rem;
+    gap: 1rem;
+}

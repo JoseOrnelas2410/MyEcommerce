@@ -11,18 +11,16 @@ document.addEventListener('DOMContentLoaded', function () {
         const stock = button.getAttribute('data-bs-stock');
         const productType = button.getAttribute('data-bs-productType');
         const active = button.getAttribute('data-bs-active');
+        const imgElement = updateModal.querySelector('#img-preview');
 
-        const imgElement = updateModal.querySelector('#imagePreview');
         imgElement.src= image;
+
         updateModal.querySelector('#id').textContent = 'Product Id: '+ id;
-
-
-
-        updateModal.querySelector('#updateProductID').value = id;
-        updateModal.querySelector('#updateProductName').value = name;
-        updateModal.querySelector('#updateProductPrice').value = price;
-        updateModal.querySelector('#updateProductStock').value = stock;
-        updateModal.querySelector('#updateProductTypeId').value = productType;
-        updateModal.querySelector('#updateProductIsActive').value = active;
+        updateModal.querySelector('#product-id').value = id;
+        updateModal.querySelector('#product-name').value = name;
+        updateModal.querySelector('#product-price').value = price;
+        updateModal.querySelector('#product-stock').value = stock;
+        updateModal.querySelector('#product-category').value = productType;
+        updateModal.querySelector('#product-active').value = active;
     });
 });
