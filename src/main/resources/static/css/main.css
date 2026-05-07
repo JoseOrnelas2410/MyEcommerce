@@ -315,7 +315,7 @@
 .button div{
     width: 1px;
     height: 60%;
-    background-color: white; /* Color blanco traslúcido */
+    background-color: white;
     margin: 0 0.75rem;
 }
 

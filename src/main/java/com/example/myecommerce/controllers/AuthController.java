@@ -8,6 +8,7 @@ import com.example.myecommerce.models.entity.User;
 import com.example.myecommerce.services.EmailService;
 import com.example.myecommerce.services.PasswordRecoveryService;
 import com.example.myecommerce.services.UserService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.Banner;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 
 @Controller
@@ -67,7 +69,6 @@ public class AuthController {
             @AuthenticationPrincipal User user,
             RedirectAttributes redirectAttributes) throws AccessDeniedException {
         User userUpdated = userService.updateUser(userUpdateDto, user.getUsername());
-        System.out.println("Profile updated agregando redirect attributes");
         redirectAttributes.addFlashAttribute("success","Profile Updated");
         if (userUpdated instanceof Admin) return "redirect:/admin/profile";//Si se cambia el email es necesario desloguear a user para no mostrar error y solicitar nuevo login.
         else return "redirect:/customer/profile";
@@ -79,17 +80,14 @@ public class AuthController {
         return "/password-recovery";
     }
 
-    @PostMapping("/start_password_recovery")
+    @PostMapping("/password_recovery")
     public String setPasswordRecoveryMail(
-            @RequestParam (name = "mail", required = true) String email
-    ){
-        try {
-            emailService.sendHtmlTemplateMail(email);//Si se logra enviar te regresa a login
-            return "redirect:/login";
-        } catch (Exception e) {
-            System.out.println("Error Exception:  " + e.getMessage());
-            return "redirect:/password_recovery";//Si no se envia te manda a la misma pagina
-        }
+            @RequestParam (name = "mail", required = true) String email,
+            RedirectAttributes redirectAttributes
+    ) throws MessagingException, IOException {
+        emailService.sendHtmlTemplateMail(email);
+        redirectAttributes.addFlashAttribute("success","Email Sent To " + email);
+        return "redirect:/password_recovery";
     }
 
     @GetMapping("/reset_password")
@@ -101,13 +99,14 @@ public class AuthController {
         return "/reset-password";
     }
 
-    @PostMapping("/recover_password")
+    @PostMapping("/reset_password")
     public String recoverPassword(
             @RequestParam(name = "token") String token,
-            @RequestParam(name = "password") String password
+            @RequestParam(name = "password") String password,
+            RedirectAttributes redirectAttributes
     ){
-        System.out.println("Data from ui {token : " + token + ", password " + password + "}");
         passwordRecoveryService.recoverPassword(token, password);
+        redirectAttributes.addFlashAttribute("success","Password Updated");
         return "redirect:/login";
     }
 

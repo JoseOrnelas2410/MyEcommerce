@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.AccessDeniedException;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +29,7 @@ public class PasswordRecoveryService {
             passwordRecovery = new PasswordRecovery(user, token);
             passwordRecoveryRepository.save(passwordRecovery);
         } else {
+            passwordRecovery.setExpirationDateTime(LocalDateTime.now().plusMinutes(10));
             passwordRecovery.setToken(token);
             passwordRecoveryRepository.save(passwordRecovery);
         }

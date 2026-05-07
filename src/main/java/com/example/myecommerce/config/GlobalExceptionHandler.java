@@ -18,10 +18,8 @@ public class GlobalExceptionHandler {
     Handler para evitar mensajes de falso positivo en error
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public String handlerMissingParams (MissingServletRequestParameterException e,
-                                        HttpServletRequest request) {
+    public String handlerMissingParams (MissingServletRequestParameterException e) {
         return "redirect:/";
-
     }
 
     @ExceptionHandler(Exception.class)

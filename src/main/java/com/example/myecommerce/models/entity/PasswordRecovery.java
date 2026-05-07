@@ -29,7 +29,7 @@ public class PasswordRecovery {
     @Column(name = "password_recovery_token", nullable = false)
     private String token;
 
-    @Column(name = "password_recovery_expiration_date_time", updatable = false, nullable = false)
+    @Column(name = "password_recovery_expiration_date_time", nullable = false)
     LocalDateTime expirationDateTime;
 
     @PrePersist
