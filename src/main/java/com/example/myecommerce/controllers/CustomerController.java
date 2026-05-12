@@ -1,15 +1,13 @@
 package com.example.myecommerce.controllers;
 
-import com.example.myecommerce.config.ShoppingCart;
 import com.example.myecommerce.models.dto.CartFractionDto;
 import com.example.myecommerce.models.dto.PasswordUpdateDto;
 import com.example.myecommerce.models.dto.UserUpdateDto;
 import com.example.myecommerce.models.entity.*;
-import com.example.myecommerce.services.OrderService;
-import com.example.myecommerce.services.ProductService;
-import com.example.myecommerce.services.ProductTypeService;
-import com.example.myecommerce.services.UserService;
+import com.example.myecommerce.services.*;
+import com.stripe.exception.StripeException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,11 +29,15 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CustomerController {
 
-    private final ShoppingCart shoppingCart;
+    //private final ShoppingCart shoppingCart;
+    private final CartService cartService;
     private final UserService userService;
     private final ProductService productService;
     private final ProductTypeService productTypeService;
     private final OrderService orderService;
+
+    @Value("${stripe.key.public}")
+    private String stripePublicKey;
 
     /**
      * Profile
@@ -67,28 +69,30 @@ public class CustomerController {
     @GetMapping("/catalogue")
     public String customerCatalogue(
             @RequestParam(name = "page", defaultValue = "0") int page,
-            @RequestParam(name = "category", defaultValue = "0") Long category,
+            @RequestParam(name = "filter_value", defaultValue = "0") Long filter_value,
             Model model
     ) {
         Map<Long, String> categories = productTypeService.getAllProductTypes();
         model.addAttribute("categories", categories);//Lista de categorias para filtrado
-        model.addAttribute("actual_category", category);//Categoria actual para la navegacion
-        Page<Product> products = productService.findProductsForCustomers(page, category);
+        model.addAttribute("filter_value", filter_value);//Categoria actual para la navegacion
+        Page<Product> products = productService.findProductsForCustomers(page, filter_value);
         model.addAttribute("page", products);
-        return "/customer/catalogue";
+        return "customer/catalogue";
     }
 
     @PostMapping("/add_to_shopping_cart")
     public String addToShoppingCart(
             @RequestParam(name = "page", defaultValue = "0") int page,
-            @RequestParam(name = "category", defaultValue = "0") Long category,
+            @RequestParam(name = "filter_value", defaultValue = "0") Long filter_value,
             @RequestParam(name = "id", defaultValue = "0") Long id,
             @RequestParam(name = "quantity", defaultValue = "0") int quantity,
             RedirectAttributes redirectAttributes){
-        this.shoppingCart.addItem(id, quantity);
-        redirectAttributes.addAttribute("page", page);
-        redirectAttributes.addAttribute("category",category);
-        redirectAttributes.addFlashAttribute("success","Item added to your shopping cart.");
+        String response = cartService.addProduct(id,quantity);
+        redirectAttributes.addFlashAttribute("success",response);
+        System.out.println("Post add to cart \nPage of request"+page);
+        System.out.println("filter of request"+filter_value);
+        redirectAttributes.addAttribute("page",page);
+        redirectAttributes.addAttribute("filter_value",filter_value);
         return "redirect:/customer/catalogue";
     }
 
@@ -101,13 +105,34 @@ public class CustomerController {
             @AuthenticationPrincipal User user,
             Model model
     ) {
-        List<CartFractionDto> cartWithDetails = productService.getCartWithDetails(this.shoppingCart.getItems());
-        BigDecimal cartTotal = productService.getCartTotal(this.shoppingCart.getItems());
+        List<CartFractionDto> cartWithDetails = productService.getCartWithDetails(cartService.completeCart());
+        BigDecimal cartTotal = productService.getCartTotal(cartService.completeCart());
         model.addAttribute("cart", cartWithDetails);
         model.addAttribute("total", cartTotal);
         model.addAttribute("name", (user.getName()+" "+user.getFirstName()));
         model.addAttribute("email", user.getEmail());
-        return "/customer/shopping-kart";
+        return "customer/shopping-kart";
+    }
+
+    @GetMapping("/update_quantity")
+    public String updateQuantity(
+            @RequestParam(name= "id") Long id,
+            @RequestParam(name = "action") String action,
+            RedirectAttributes redirectAttributes
+    ) {
+        String response = cartService.updateQuantity(id, action);
+        redirectAttributes.addFlashAttribute("success",response);
+        return "redirect:/customer/shopping_cart";
+    }
+
+    @GetMapping("/remove_fsc")
+    public String removeFromShoppingKart(
+            @RequestParam(name = "id") Long id,
+            RedirectAttributes redirectAttributes
+    ) {
+        cartService.removeProduct(id);
+        redirectAttributes.addFlashAttribute("success","Item Removed");
+        return "redirect:/customer/shopping_cart";
     }
 
     @PostMapping("/create_order")
@@ -115,27 +140,36 @@ public class CustomerController {
             @AuthenticationPrincipal User user,
             RedirectAttributes redirectAttributes
     ){
-        orderService.createOrder(user.getUsername(), this.shoppingCart.getItems());
+        String id = orderService.createOrder(user.getUsername());
         redirectAttributes.addFlashAttribute("success","Order Created");
-        return "redirect:/customer/shopping_cart";
+        return "redirect:/customer/order_details?id="+id;
     }
 
-    @GetMapping("/update_quantity")
-    public String updateQuantity(
-            @RequestParam(name= "id") Long id,
-            @RequestParam(name = "action") String action
-    ) {
-        int maxStock= productService.findProductById(id).getStock();
-        this.shoppingCart.updateQuantity(id,action,maxStock);
-        return "redirect:/customer/shopping_cart";
+    @PostMapping("/shopping_cart")
+    public String payOrder(
+            @AuthenticationPrincipal User user,
+            Model model
+    ) throws StripeException, IllegalAccessException {
+        Long orderId = orderService.startPayment(user.getUsername());
+        return "redirect:/customer/pay?id="+orderId;
     }
 
-    @GetMapping("/remove_fsc")
-    public String removeFromShoppingKart(
-            @RequestParam(name = "id") Long id
-    ) {
-        this.shoppingCart.removeItem(id);
-        return "redirect:/customer/shopping_cart";
+    /**
+     * Payment
+     */
+
+    @GetMapping("/pay")
+    public String payOrder(
+            @AuthenticationPrincipal User user,
+            @RequestParam(name = "id", defaultValue = "0") Long id,
+            Model model
+    ) throws IllegalAccessException {
+        System.out.println("pay endpoint started for customer "+ user.getUsername());
+        String clientSecret = orderService.getClientSecret(user.getUsername(), id);
+        System.out.println("cleint secret gotten from db " + clientSecret);
+        model.addAttribute("public_key", this.stripePublicKey);
+        model.addAttribute("client_secret", clientSecret);
+        return "customer/pay";
     }
 
     /**
@@ -145,6 +179,7 @@ public class CustomerController {
     @GetMapping("/orders")
     public String customerOrders(
             @RequestParam(name = "page", defaultValue = "0") int pageNumber,
+            @RequestParam(name = "filter_value", defaultValue = "0") Long filter_value,
             @AuthenticationPrincipal User user,
             Model model
     ) {
@@ -152,7 +187,8 @@ public class CustomerController {
         model.addAttribute("page", page);
         model.addAttribute("name", (user.getName()+" "+user.getFirstName()));
         model.addAttribute("email", user.getEmail());
-        return "/customer/orders";
+        model.addAttribute("filter_value",filter_value);
+        return "customer/orders";
     }
 
     @GetMapping("/order_details")
@@ -165,6 +201,6 @@ public class CustomerController {
         model.addAttribute("order", orderFound);
         model.addAttribute("name", user.getName()+" "+user.getFirstName());
         model.addAttribute("email", user.getEmail());
-        return "/customer/order-details";
+        return "customer/order-details";
     }
 }

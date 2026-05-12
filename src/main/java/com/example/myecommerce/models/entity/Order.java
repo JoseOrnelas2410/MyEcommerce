@@ -58,6 +58,9 @@ public class Order {
     @Column(name = "order_address")
     private String orderAddress;
 
+    @Column(name = "order_client_secret", nullable = true)
+    private String clientSecret;
+
     public Order(
             Customer customer,
             OrderStatus orderStatus,

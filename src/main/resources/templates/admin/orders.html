@@ -33,8 +33,8 @@
                                 <td th:text="${order.orderStatus.orderStatusDescription}"></td>
                                 <td th:text="${order.paymentStatus.paymentStatusDescription}"></td>
                                 <td th:text="${order.customer.email}"></td>
-                                <td th:text="${order.total}"></td>
-                                <td th:text="${order.dateTime}"></td>
+                                <td th:text="'$'+${order.total}+'MXN'"></td>
+                                <td th:text="${#temporals.format(order.dateTime,'dd-MM-yyyy HH:mm')}"></td>
                                 <td>
                                     <div th:replace="~{/fragments/buttons :: navigation-button(
                                     '/admin/update_order?id='+${order.orderId},
@@ -54,12 +54,12 @@
             ${page.isLast()},
             ${page.hasPrevious()},
             ${page.hasNext()},
-            ${actual_category})}">
+            ${filter_value})}">
             </div>
         </div>
         <div class="filters-section">
             <form th:action="@{/admin/orders}" method="get">
-                <select name="order_status"
+                <select name="filter_value"
                         class="form-select">
                     <option selected disabled>Select a category</option>
                     <option th:each="status: ${status_list.entrySet()}"

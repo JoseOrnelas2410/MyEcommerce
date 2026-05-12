@@ -208,6 +208,7 @@
     height: 14rem;
     width: 26rem;
     position: relative;
+    overflow: hidden;
 }
 
 .customer-header-data h1 {

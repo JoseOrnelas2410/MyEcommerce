@@ -32,27 +32,28 @@ public class AuthController {
     private final EmailService emailService;
     private final PasswordRecoveryService passwordRecoveryService;
 
-    @GetMapping("/login")//recibe esta liga
+    @GetMapping("/login")
     public String login(){
         return "login";
-    } //retorna este archivo html
+    }
 
-    @GetMapping("/register")//Muestra la vista
+    @GetMapping("/register")
     public String showRegister(Model model){
         model.addAttribute("customer", new Customer());
         return "/register";
     }
 
-    @PostMapping("/register")//Se dispara a traves de mi button en form
-    public String register(@ModelAttribute("customer") Customer customer) {
+    @PostMapping("/register")
+    public String register(@ModelAttribute("customer") Customer customer,
+                           RedirectAttributes redirectAttributes) {
         userService.saveCustomer(customer);
-        return "redirect:/login?success";
+        redirectAttributes.addFlashAttribute("success","User Registered");
+        return "redirect:/login";
     }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("update_password")
     public String updatePassword(
-            //Buscar @Valid para implementar verificacion de campos
             @ModelAttribute("passwordUpdateDto")PasswordUpdateDto passwordUpdateDto,
             @AuthenticationPrincipal User user,
             RedirectAttributes redirectAttributes) throws AccessDeniedException {
@@ -64,7 +65,6 @@ public class AuthController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("update_profile")
     public String updateProfile(
-            //Buscar @Valid para implementar verificacion de campos
             @ModelAttribute("userUpdateDto")UserUpdateDto userUpdateDto,
             @AuthenticationPrincipal User user,
             RedirectAttributes redirectAttributes) throws AccessDeniedException {

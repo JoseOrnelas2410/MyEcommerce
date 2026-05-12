@@ -72,6 +72,7 @@ public class AdminController {
     @GetMapping("/catalogue")
     public String adminCatalogue(
             @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "filter_value", defaultValue = "0") Long filter_value,
             Model model
     ){
         UpdateProductDto updateProductDto = new UpdateProductDto();
@@ -129,14 +130,18 @@ public class AdminController {
     @GetMapping("/orders")
     public String adminOrders(
             @RequestParam(name = "page",defaultValue = "0") int pageNumber,
-            @RequestParam(name = "order_status", defaultValue = "0") Long order_status,
+            @RequestParam(name = "filter_value", defaultValue = "0") Long filter_value,
             Model model
     ){
-        Page<Order> page = orderService.getOrders(pageNumber, order_status);
+        System.out.println("pageNumber sent to endpoint: " + pageNumber);
+        Page<Order> page = orderService.getOrders(pageNumber, filter_value);
+        System.out.println("Actual page " + page.getNumber());
+        System.out.println("Total pages " + page.getTotalPages());
+        System.out.println("Total elements " + page.getTotalElements());
         Map<Long,String> statusList = orderStatusService.getAllOrderStatus();
         model.addAttribute("page", page);
         model.addAttribute("status_list", statusList);
-        model.addAttribute("order_status", order_status);
+        model.addAttribute("order_status", filter_value);
         return "admin/orders";
     }
 
@@ -195,7 +200,7 @@ public class AdminController {
             @RequestParam(name = "to_date") Date to
     ) throws IOException {
         response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "inline; filename=report.pdf");
+        response.setHeader("Content-Disposition", "inline; filename=report.pdf");//No hardcodear el nombre del reporte
         pdfService.generate(response.getOutputStream(), reportType,from,to);
     }
 }

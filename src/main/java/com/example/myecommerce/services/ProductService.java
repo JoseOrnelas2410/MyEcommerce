@@ -34,7 +34,7 @@ public class ProductService {
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Page<Product> getAllProductsByPage(int page) {
-        Pageable pageable = PageRequest.of(page, 20, Sort.by("name").ascending());
+        Pageable pageable = PageRequest.of(page, 8, Sort.by("name").ascending());
         return productRepository.findAllProductsWithDetails(pageable);
     }
 
@@ -85,7 +85,7 @@ public class ProductService {
     @Transactional
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public Page<Product> findProductsForCustomers(int page, long category){
-        Pageable pageable = PageRequest.of(page, 20, Sort.by("name").ascending());
+        Pageable pageable = PageRequest.of(page, 6, Sort.by("name").ascending());
         if (category > 0) {
             return productRepository.findActiveProductsByCategory(pageable, category);
         }

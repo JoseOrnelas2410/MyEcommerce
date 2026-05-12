@@ -1,15 +1,31 @@
 package com.example.myecommerce.config;
 
+import com.example.myecommerce.exception.OrderUpdateException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.naming.AuthenticationException;
 import java.util.Arrays;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    /*
+    Exception para order
+     */
+    @ExceptionHandler(OrderUpdateException.class)
+    public String handlerOrderUpdate(OrderUpdateException e,
+                                     RedirectAttributes redirectAttributes,
+                                     HttpServletRequest request
+                                     ){
+        String referer = request.getHeader("Referer");
+        redirectAttributes.addFlashAttribute("error","Order Status Can´t Be Downgraded");
+        return "redirect:"+referer;
+    }
 
     /*
     Por carga de recursos como imagenes algunos endpoint se llaman
@@ -23,7 +39,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public String handleException(Exception e, RedirectAttributes redirectAttributes, HttpServletRequest request)
+    public String handleException(Exception e,
+                                  RedirectAttributes redirectAttributes,
+                                  HttpServletRequest request)
     {
         String referer= request.getHeader("Referer");
         if (!(referer == null)) {

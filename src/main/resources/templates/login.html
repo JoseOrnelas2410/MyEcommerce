@@ -9,7 +9,7 @@
     <link rel="stylesheet" th:href="@{/css/auth.css}">
 </head>
 <body>
-    <div th:replace="~{fragments/redirect-message :: redirect-message}"></div>
+<div th:replace="~{/fragments/redirect-message :: redirect-message}"></div>
     <div class="form-data-container">
         <form th:action="@{/login}"
               class="auth-form"
@@ -37,5 +37,6 @@
             <p>LOGIN</p>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

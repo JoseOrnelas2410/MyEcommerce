@@ -4,6 +4,7 @@ import com.example.myecommerce.models.entity.User;
 import com.example.myecommerce.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,10 +26,7 @@ public class MyUserDetailService implements UserDetailsService {
         email=email.trim();
         System.out.println("Email"+ email);
         return userRepository.findUserByEmail(email)
-                .orElseThrow(()->{
-                    System.out.println("Usuario no encontrado en BD");
-                    return new UsernameNotFoundException("User not found with email");
-                });
+                .orElseThrow(()-> new UsernameNotFoundException("User not found with email"));
     }
 
 }

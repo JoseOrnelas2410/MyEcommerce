@@ -34,7 +34,7 @@
                             <p th:text="${order.total}" class="ammount">Price</p>
                         </div>
                         <div class="top-right-data">
-                            <p th:text="${order.dateTime}" class="gray-tag">TimeStamp</p>
+                            <p th:text="${#temporals.format(order.dateTime, 'dd-MM-yyyy HH:mm')}" class="gray-tag">TimeStamp</p>
                             <p th:text="${order.totalProducts} + ' items'" class="order-items">TotalItems</p>
                         </div>
 
@@ -57,7 +57,7 @@
                     ${page.isLast()},
                     ${page.hasPrevious()},
                     ${page.hasNext()},
-                    0)}">
+                    ${filter_value})}">
                     </div>
                 </div>
             </div>

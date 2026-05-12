@@ -13,6 +13,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.openpdf.text.Document;
+import org.openpdf.text.Element;
 import org.openpdf.text.Image;
 import org.openpdf.text.PageSize;
 import org.openpdf.text.pdf.PdfPTable;
@@ -66,6 +67,8 @@ public class PdfService {
         Document document = new Document(PageSize.A4);
         PdfWriter.getInstance(document, outputStream);
         PdfPTable header = new PdfPTable(1);
+        header.setWidthPercentage(100);
+        header.setHorizontalAlignment(Element.ALIGN_CENTER);
         header.addCell("MyECommerce");
         header.addCell(title);
         PdfPTable contentTable;
@@ -140,6 +143,9 @@ public class PdfService {
                  throw new IllegalArgumentException("Report type unavalible");
         }
 
+        contentTable.setWidthPercentage(100);
+
+
         BufferedImage bufferedImage = barChart.createBufferedImage(500, 300);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ImageIO.write(bufferedImage,"png", byteArrayOutputStream);
@@ -169,7 +175,7 @@ public class PdfService {
             content.addCell(String.valueOf(rank.getAndIncrement()));
             content.addCell(String.valueOf(item.getOrderId()));
             content.addCell(item.getCustomerName());
-            content.addCell(String.valueOf(item.getTotal()));
+            content.addCell("$" + item.getTotal() + "MXN");
             content.addCell(String.valueOf(item.getOrderDate()));
         });
         return content;
@@ -209,7 +215,7 @@ public class PdfService {
             content.addCell(String.valueOf(rank.getAndIncrement()));
             content.addCell(item.getName());
             content.addCell(String.valueOf(item.getTotalOrders()));
-            content.addCell(String.valueOf(item.getTotalPayed()));
+            content.addCell("$"+item.getTotalPayed()+"MXN");
             content.addCell(String.valueOf(item.getLastOrderDate()));
         });
         return content;

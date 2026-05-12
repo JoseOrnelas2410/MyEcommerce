@@ -6,16 +6,16 @@
          isLast,
          hasPrevious,
          hasNext,
-         category)"><!--Necesario para que si navegamos con filtro no se pierda-->
+         filter_value)"><!--Necesario para que si navegamos con filtro no se pierda-->
     <nav aria-label="Page navigation" th:if="${totalPages > 0}">
         <ul class="pagination justify-content-center align-items-center">
 
             <li class="page-item" th:classappend="${isFirst} ? 'disabled'">
-                <a class="page-link" th:href="@{${url}(page=0)(category=${category})}">First</a>
+                <a class="page-link" th:href="@{${url}(page=0,filter_value=${filter_value})}">First</a>
             </li>
 
             <li class="page-item" th:classappend="${!hasPrevious} ? 'disabled'">
-                <a class="page-link" th:href="@{${url}(page=${currentPage - 1})(category=${category})}">Previous</a>
+                <a class="page-link" th:href="@{${url}(page=${currentPage - 1},filter_value=${filter_value})}">Previous</a>
             </li>
 
             <li class="page-item disabled">
@@ -23,11 +23,11 @@
             </li>
 
             <li class="page-item" th:classappend="${!hasNext} ? 'disabled'">
-                <a class="page-link" th:href="@{${url}(page=${currentPage + 1})(category=${category})}">Next</a>
+                <a class="page-link" th:href="@{${url}(page=${currentPage + 1},filter_value=${filter_value})}">Next</a>
             </li>
 
             <li class="page-item" th:classappend="${isLast} ? 'disabled'">
-                <a class="page-link" th:href="@{${url}(page=${totalPages - 1})(category=${category})}">Last</a>
+                <a class="page-link" th:href="@{${url}(page=${totalPages - 1},filter_value=${filter_value})}">Last</a>
             </li>
         </ul>
     </nav>

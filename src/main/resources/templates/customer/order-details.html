@@ -20,6 +20,9 @@
                 </div>
             </div>
 
+            <!--Stripe Pasarela de pago-->
+<!--            <div th:replace="~{/fragments/buttons :: navigation-button('/customer/pay?id='+${order.orderId},'PAY WITH STRIPE','bi bi-credit-card')}"></div>-->
+
             <div class="horizontal-separator">
                 <div class="horizontal-line"></div>
                 <p>DETAILS</p>
@@ -47,7 +50,6 @@
                         <p th:text="${fraction.subtotal}" class="ammount"></p>
                     </div>
                 </div>
-                <div class="divider-line"></div>
             </div>
         </div>
     </div>

@@ -39,8 +39,8 @@
                                     <td th:text="${order.key}"></td>
                                     <td th:text="${order.value.orderId}"></td>
                                     <td th:text="${order.value.customerName}"></td>
-                                    <td th:text="${order.value.total}"></td>
-                                    <td th:text="${order.value.orderDate}"></td>
+                                    <td th:text="'$' + ${order.value.total} + 'MXN'"></td>
+                                    <td th:text="${#temporals.format(order.value.orderDate, 'dd-MM-yyy HH:mm')}"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -88,8 +88,8 @@
                             <td th:text="${customer.key}"></td>
                             <td th:text="${customer.value.name}"></td>
                             <td th:text="${customer.value.totalOrders}"></td>
-                            <td th:text="${customer.value.totalPayed}"></td>
-                            <td th:text="${customer.value.lastOrderDate}"></td>
+                            <td th:text="'$' + ${customer.value.totalPayed} + 'MXN'"></td>
+                            <td th:text="${#temporals.format(customer.value.lastOrderDate,'dd-MM-yyy HH:mm')}"></td>
                         </tr>
                         </tbody>
                     </table>

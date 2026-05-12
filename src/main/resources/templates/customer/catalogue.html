@@ -5,7 +5,7 @@
         <script th:src="@{/js/catalogue-quantity.js}"></script>
         <div class="filtered-content">
             <div th:if="${page.totalElements == 0}">
-                <p>Sorry we dont have any product registered yec, please come back later</p>
+                <p class="main-id">No Products Found</p>
             </div>
 
             <div th:if="${page.totalElements>0 && !page.hasContent()}">
@@ -30,7 +30,7 @@
                         <form th:action="@{/customer/add_to_shopping_cart}"
                               method="post">
                             <input type="hidden" name="page" th:value="${page.number}">
-                            <input type="hidden" name="category" th:value="${categoryid}">
+                            <input type="hidden" name="filter_value" th:value="${filter_value}">
                             <input type="hidden" name="id" th:value="${product.id}">
                             <div class="quantity-selector-container">
                                 <div class="quantity-selector">
@@ -72,13 +72,13 @@
             ${page.isLast()},
             ${page.hasPrevious()},
             ${page.hasNext()},
-            ${actual_category})}">
+            ${filter_value})}">
             </div>
         </div>
             <!--Contenedor filtros-->
         <div class="filters-section">
             <form th:action="@{/customer/catalogue}" method="get">
-                <select name="category" required
+                <select name="filter_value" required
                 class="input">
                     <option selected disabled>Select a category...</option>
                     <option th:each="category: ${categories.entrySet()}"

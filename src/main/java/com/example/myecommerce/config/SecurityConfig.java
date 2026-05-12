@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,7 +25,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
-                .csrf(csfr->csfr.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 /*
                  * Manejo de sesion en http para mantener una sesion activa
                  */
@@ -35,6 +36,7 @@ public class SecurityConfig {
                 )
                 /*
                  * Establecemos procesos que necesitan authenticated y que no necesitan
+                 * Añadimos favicon para que no lance error 203 y genere bucles
                  */
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers("/css/**","/images/**","/public/**","/js/**").permitAll()

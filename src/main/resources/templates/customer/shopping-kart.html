@@ -13,16 +13,22 @@
                             <p class="gray-tag">Total+IVA</p>
                             <p th:text="'$' + ${total}" class="ammount">$0.00</p>
                         </div>
-                        <form th:action="@{/customer/create_order}"
-                              class="customer-header-button"
-                              method="post">
-                            <div th:replace="~{fragments/buttons :: action-button('PAY ORDER','bi bi-credit-card')}"></div>
-                        </form>
+                        <div class="bottom-right-data">
+                            <form th:action="@{/customer/create_order}"
+                                  method="post">
+                                <div th:replace="~{fragments/buttons :: action-button('PAY ORDER','bi bi-credit-card')}"></div>
+                            </form>
+                            <!--Stripe Pasarela de pago-->
+<!--                            <form th:action="@{/customer/shopping_cart}"-->
+<!--                                  method="post">-->
+<!--                                <div th:replace="~{fragments/buttons :: action-button('PAY WITH STRIPE','bi bi-credit-card')}"></div>-->
+<!--                            </form>-->
+                        </div>
                     </div>
                 </div>
             </div>
             <div th:if="${#lists.isEmpty(cart)}">
-                <p>Your cart is empty, please add products to your shopping kart</p>
+                <p style="font-size: 1.25rem; font-weight: bold">Your cart is empty, please add products to your shopping cart</p>
             </div>
             <div th:unless="${#lists.isEmpty(cart)}" class="cart-content">
                 <div class="horizontal-separator">

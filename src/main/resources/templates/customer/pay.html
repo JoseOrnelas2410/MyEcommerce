@@ -1,0 +1,66 @@
+<section layout:decorate="~{layouts/main-layout}"
+         xmlns:th="http://www.thymeleaf.org"
+         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+  <div layout:fragment="content">
+    <div class="customer-page">
+      <form id="payment-form">
+        <div id="card-element">
+        </div>
+
+        <div th:replace="~{/fragments/buttons :: action-button('PAY NOW','bi bi-credit-card')}"></div>
+
+        <div id="payment-result" class="hidden text-danger mt-2"></div>
+      </form>
+      <input type="hidden" id="stripe-public-key" th:value="${public_key}">
+      <input type="hidden" id="client-secret" th:value="${client_secret}">
+      <p th:text="${client_secret}"></p>
+      <p th:text="${public_key}"></p>
+    </div>
+    <script src="https://js.stripe.com/v3"></script>
+    <script th:inline="javascript">
+      document.addEventListener("DOMContentLoaded", function () {
+        const stripeKey = document.getElementById('stripe-public-key').value;
+        const clientSecret = document.getElementById('client-secret').value;
+
+        if (stripeKey && clientSecret) {
+          const stripe = Stripe(stripeKey);
+          // Usamos las opciones para vincular el clientSecret a los elementos
+          const elements = stripe.elements({ clientSecret });
+          const cardElement = elements.create("card");
+          cardElement.mount("#card-element");
+
+          const form = document.getElementById('payment-form');
+
+          form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            // 1. Deshabilitar el botón para evitar múltiples clics
+            const submitButton = form.querySelector('button');
+            if(submitButton) submitButton.disabled = true;
+
+            // 2. Llamada a la confirmación (Corregida)
+            const result = await stripe.confirmPayment({
+              elements,
+              confirmParams: {
+                // Simplificamos la URL: window.location.origin ya es http://localhost:8081
+                return_url: window.location.origin + "/customer/order/success"
+              }
+            });
+
+            // 3. Manejo de errores
+            // Si hay un error, el código llegará aquí.
+            // Si NO hay error, Stripe REDIRIGE la página automáticamente y nada de aquí abajo se ejecuta.
+            if (result.error) {
+              const messageContainer = document.querySelector('#payment-result');
+              messageContainer.textContent = result.error.message;
+              messageContainer.classList.remove('hidden'); // Asegúrate de mostrarlo
+
+              // Reactivar botón en caso de error
+              if(submitButton) submitButton.disabled = false;
+            }
+          });
+        }
+      });
+    </script>
+  </div>
+</section>
